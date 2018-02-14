@@ -1,0 +1,19 @@
+# See http://editorconfig.org
+
+# This file automatically sets a number of formatting settings for your
+# text editor, if you have the editorconfig plugin installed.
+
+root = true
+
+[*]
+trim_trailing_whitespace = true
+insert_final_newline = true
+charset = utf-8
+indent_style = space
+indent_size = 4
+
+[*.bat]
+indent_style = tab
+
+[Makefile]
+indent_style = tab

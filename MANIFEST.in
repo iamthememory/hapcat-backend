@@ -1,0 +1,19 @@
+graft docs
+graft src
+graft tests
+
+include AUTHORS.rst
+include CHANGELOG.rst
+include CONTRIBUTING.rst
+include LICENSE.md
+include MANIFEST.in
+include README.rst
+include tox.ini
+include .bumpversion.cfg
+include .coveragerc
+include .editorconfig
+include .gitlab-ci.yml
+include .pylintrc
+
+global-exclude *.py[cod] __pycache__ *.so
+prune docs/_build
