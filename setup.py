@@ -114,6 +114,12 @@ setup(
     py_modules=[],
     tests_require=[
         'tox',
+        'httpstatus35;python_version<"3.5"',
+        'enum34;python_version<"3.4"',
+    ],
+    install_requires=[
+        'httpstatus35;python_version<"3.5"',
+        'enum34;python_version<"3.4"',
     ],
     cmdclass={
         'test': Tox,
