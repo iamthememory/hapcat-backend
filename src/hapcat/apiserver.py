@@ -6,6 +6,9 @@
 
 from __future__ import absolute_import
 
+import json
+from pkg_resources import resource_string
+
 try:
     from http import HTTPStatus
 except ImportError:
@@ -54,9 +57,16 @@ class APIRequestHandler(BaseHTTPRequestHandler):
 
     def suggestions(self):
         """Retrieve suggestions.
+
+        FIXME: Don't use test data.
         """
 
-        data = 'Suggestions here'.encode()
+        # Simulate creating and encoding JSON, instead of just sending the file
+        # as-is.
+        sugs = resource_string(__package__, 'data/test-suggestions.json')
+        sugs = json.loads(sugs.decode())
+
+        data = json.dumps(sugs).encode()
         code = HTTPStatus.OK
 
         return code, data
