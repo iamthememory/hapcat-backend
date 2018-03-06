@@ -12,7 +12,6 @@ include tox.ini
 include .bumpversion.cfg
 include .coveragerc
 include .editorconfig
-include .gitlab-ci.yml
 include .pylintrc
 
 global-exclude *.py[cod] __pycache__ *.so

@@ -109,9 +109,10 @@ setup(
     author=authors,
     author_email=authors,
     url='https://github.com/iamthememory/hapcat',
-    package_dir={'': 'src'},
-    packages=find_packages(where='src'),
+    package_dir={'hapcat': 'src/hapcat'},
+    packages=['hapcat'],
     py_modules=[],
+    package_data={'hapcat': ['data/*']},
     tests_require=[
         'tox',
         'httpstatus35;python_version<"3.5"',
