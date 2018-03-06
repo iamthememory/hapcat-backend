@@ -18,8 +18,6 @@ except ImportError:
 
 import hapcat
 
-dummy = '<html><head><title>Success!</title></head><body>Success!</body></html>'
-
 
 class APIRequestHandler(BaseHTTPRequestHandler):
     """Handle API server requests.
@@ -31,12 +29,41 @@ class APIRequestHandler(BaseHTTPRequestHandler):
         """Handle a GET request.
         """
 
-        data = dummy.encode()
+        url = self.sanitize_url(self.path)
 
-        self.send_response(HTTPStatus.OK)
+        # Get the handler.
+        try:
+            handler = self.handlers[url]
+            code, data = handler(self)
+
+        except KeyError:
+            code = HTTPStatus.NOT_FOUND
+            data = 'Unknown API URL'.encode()
+
+        self.send_response(code)
         self.send_header('Content-Length', str(len(data)))
         self.end_headers()
         self.wfile.write(data)
+
+    @staticmethod
+    def sanitize_url(path):
+        """Sanitize a URL to turn it into the canonical URL.
+        """
+
+        return path
+
+    def suggestions(self):
+        """Retrieve suggestions.
+        """
+
+        data = 'Suggestions here'.encode()
+        code = HTTPStatus.OK
+
+        return code, data
+
+    handlers = {
+        '/suggestions': suggestions,
+    }
 
 
 if __name__ == '__main__':
