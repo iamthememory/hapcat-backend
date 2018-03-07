@@ -71,6 +71,29 @@ class APIRequestHandler(BaseHTTPRequestHandler):
 
         return code, data
 
+    def send_error(self, *args, **kwargs):
+        """Send and log an error reply.
+
+        Arguments are
+
+        * code:    an HTTP error code
+                   3 digits
+        * message: a simple optional 1 line reason phrase.
+                   \*( HTAB / SP / VCHAR / %x80-FF )
+                   defaults to short entry matching the response code
+        * explain: a detailed message defaults to the long entry
+                   matching the response code.
+
+        This sends an error response (so it must be called before any
+        output has been generated), logs the error, and finally sends
+        a piece of HTML explaining the error to the user.
+
+        This is a copy of the upstream with fixed formatting to prevent
+        Sphinx from choking up.
+        """
+
+        BaseHTTPRequestHandler.send_error(self, *args, **kwargs)
+
     handlers = {
         '/suggestions': suggestions,
     }
