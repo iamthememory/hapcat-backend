@@ -4,14 +4,18 @@
 """This module does stuff.
 """
 
-from __future__ import print_function
+from __future__ import absolute_import, print_function
+
+import hapcat.apiserver
 
 
 def main():
-    """Do stuff.
+    """Start the Hapcat daemon.
     """
 
-    print('Hello, world!')
+    print('Initializing Hapcat daemon...')
+
+    hapcat.apiserver.daemon_listen()
 
 
 if __name__ == '__main__':

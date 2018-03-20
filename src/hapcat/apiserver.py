@@ -99,7 +99,9 @@ class APIRequestHandler(BaseHTTPRequestHandler):
     }
 
 
-if __name__ == '__main__':
-    server_address = ('', 8080)
-    httpd = HTTPServer(server_address, APIRequestHandler)
+def daemon_listen(addr='', port=8080):
+    """Listen and handle API requests.
+    """
+
+    httpd = HTTPServer((addr, port), APIRequestHandler)
     httpd.serve_forever()
