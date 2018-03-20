@@ -127,6 +127,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'hapcatd=hapcat.hapcat:main',
             ]
         }
 )
