@@ -63,7 +63,7 @@ class APIRequestHandler(BaseHTTPRequestHandler):
 
         # Simulate creating and encoding JSON, instead of just sending the file
         # as-is.
-        sugs = resource_string(__package__, 'data/test-suggestions.json')
+        sugs = resource_string('hapcat', 'data/test-suggestions.json')
         sugs = json.loads(sugs.decode())
 
         data = json.dumps(sugs).encode()
