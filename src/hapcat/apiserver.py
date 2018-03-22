@@ -71,6 +71,20 @@ class APIRequestHandler(BaseHTTPRequestHandler):
 
         return code, data
 
+    def serverinfo(self):
+        """Send server info.
+        """
+
+        info = {
+            'server_version': hapcat.__version__,
+            'api_versions': [0],
+        }
+
+        data = json.dumps(info).encode()
+        code = HTTPStatus.OK
+
+        return code, data
+
     def send_error(self, *args, **kwargs):
         """Send and log an error reply.
 
@@ -95,7 +109,9 @@ class APIRequestHandler(BaseHTTPRequestHandler):
         BaseHTTPRequestHandler.send_error(self, *args, **kwargs)
 
     handlers = {
-        '/suggestions': suggestions,
+        '/api/serverinfo': serverinfo,
+        '/api/v0/serverinfo': serverinfo,
+        '/api/v0/suggestions': suggestions,
     }
 
 
