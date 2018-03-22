@@ -108,7 +108,46 @@ class APIRequestHandler(BaseHTTPRequestHandler):
 
         BaseHTTPRequestHandler.send_error(self, *args, **kwargs)
 
+    def debug_urls(self):
+        """Send a list of URLs for debugging.
+        """
+
+        basetemp = """\
+<html>
+    <head>
+        <title>
+            URLs list (debugging)
+        </title>
+    </head>
+    <body>
+        <ul>
+            %s
+        </ul>
+    </body>
+</html>
+        """
+
+        itemplate = """\
+            <li>
+                <a href="%(url)s">%(urltext)s</a>
+            </li>
+        """
+
+        urllist = []
+
+        for handler in sorted(self.handlers.keys()):
+            d = {
+                'url': handler,
+                'urltext': handler + ': ' + self.handlers[handler].__name__,
+            }
+            urllist.append(itemplate % d)
+
+        text = (basetemp % '\n'.join(urllist)).encode()
+
+        return HTTPStatus.OK, text
+
     handlers = {
+        '/': debug_urls,
         '/api/serverinfo': serverinfo,
         '/api/v0/serverinfo': serverinfo,
         '/api/v0/suggestions': suggestions,
