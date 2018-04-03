@@ -124,14 +124,14 @@ class APIRequestHandler(BaseHTTPRequestHandler):
 %s
         </ul>
     </body>
-</html>
-        """
+</html>\
+"""
 
         itemplate = """\
             <li>
                 <a href="%(url)s">%(urltext)s</a>
-            </li>
-        """
+            </li>\
+"""
 
         urllist = []
 
