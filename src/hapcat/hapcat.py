@@ -6,6 +6,7 @@
 
 from __future__ import absolute_import, print_function
 
+import sys
 import hapcat.apiserver
 
 
@@ -19,4 +20,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
