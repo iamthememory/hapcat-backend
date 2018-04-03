@@ -154,9 +154,15 @@ class APIRequestHandler(BaseHTTPRequestHandler):
     }
 
 
-def daemon_listen(addr='', port=8080):
+def daemon_listen(config):
     """Listen and handle API requests.
     """
 
-    httpd = HTTPServer((addr, port), APIRequestHandler)
+    httpd = HTTPServer(
+        (
+            config.get('apiserver', 'address'),
+            config.getint('apiserver', 'port')
+        ),
+        APIRequestHandler
+    )
     httpd.serve_forever()

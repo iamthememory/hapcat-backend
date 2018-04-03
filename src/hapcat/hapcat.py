@@ -67,7 +67,7 @@ def main():
 
     print('Initializing Hapcat daemon...')
 
-    hapcat.apiserver.daemon_listen()
+    hapcat.apiserver.daemon_listen(config)
 
 
 if __name__ == '__main__':
