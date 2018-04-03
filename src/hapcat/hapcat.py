@@ -19,8 +19,7 @@ def make_argparser():
 
     parser = argparse.ArgumentParser(
         description=hapcat.__description__,
-        add_help=True,
-        allow_abbrev=False
+        add_help=True
     )
 
     # Version.
