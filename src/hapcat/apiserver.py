@@ -121,7 +121,7 @@ class APIRequestHandler(BaseHTTPRequestHandler):
     </head>
     <body>
         <ul>
-            %s
+%s
         </ul>
     </body>
 </html>
