@@ -30,6 +30,13 @@ def make_argparser():
         version='%(prog)s {version}'.format(version=hapcat.__version__)
     )
 
+    parser.add_argument(
+        '-c',
+        '--config',
+        type=argparse.FileType('r'),
+        help='the configuration file to use'
+    )
+
     return parser
 
 def main():
