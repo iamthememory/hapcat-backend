@@ -114,13 +114,15 @@ setup(
     py_modules=[],
     package_data={'hapcat': ['data/*']},
     tests_require=[
-        'tox',
-        'httpstatus35;python_version<"3.5"',
+        'configparser;python_version<"3.2",
         'enum34;python_version<"3.4"',
+        'httpstatus35;python_version<"3.5"',
+        'tox',
     ],
     install_requires=[
-        'httpstatus35;python_version<"3.5"',
+        'configparser;python_version<"3.2",
         'enum34;python_version<"3.4"',
+        'httpstatus35;python_version<"3.5"',
     ],
     cmdclass={
         'test': Tox,
