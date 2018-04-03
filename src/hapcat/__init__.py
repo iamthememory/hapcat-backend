@@ -4,3 +4,7 @@
 """
 
 __version__ = '0.0.2.dev1'
+
+__description__ = """\
+The backend daemon for the hapcat project.
+"""
