@@ -11,8 +11,8 @@ from pkg_resources import resource_string
 import configparser
 
 def create_config(conffile):
-    """Write the default configuration to the given file.
+    """Write the example configuration to the given file.
     """
 
-    defconf = resource_string('hapcat', 'data/hapcatd.conf').decode()
-    conffile.write(defconf)
+    exconf = resource_string('hapcat', 'data/hapcatd-example.conf').decode()
+    conffile.write(exconf)

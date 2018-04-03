@@ -60,9 +60,6 @@ def main():
         hapcat.config.create_config(args.genconfig)
         return
 
-    # Parse/generate our configuration.
-    config = hapcat.config.parse(args.config)
-
     del args
 
     print('Initializing Hapcat daemon...')
