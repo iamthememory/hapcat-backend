@@ -115,6 +115,7 @@ setup(
     package_data={'hapcat': ['data/*']},
     tests_require=[
         'SQLAlchemy',
+        'alembic',
         'argparse; python_version<"2.7" or '
             '(python_version>="3.0" and python_version<"3.2")',
         'configparser; python_version<"3.2"',
@@ -124,6 +125,7 @@ setup(
     ],
     install_requires=[
         'SQLAlchemy',
+        'alembic',
         'argparse; python_version<"2.7" or '
             '(python_version>="3.0" and python_version<"3.2")',
         'configparser; python_version<"3.2"',
