@@ -114,6 +114,7 @@ setup(
     py_modules=[],
     package_data={'hapcat': ['data/*']},
     tests_require=[
+        'SQLAlchemy',
         'argparse; python_version<"2.7" or '
             '(python_version>="3.0" and python_version<"3.2")',
         'configparser; python_version<"3.2"',
@@ -122,6 +123,7 @@ setup(
         'tox',
     ],
     install_requires=[
+        'SQLAlchemy',
         'argparse; python_version<"2.7" or '
             '(python_version>="3.0" and python_version<"3.2")',
         'configparser; python_version<"3.2"',
