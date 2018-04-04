@@ -130,12 +130,15 @@ setup(
         'enum34; python_version<"3.4"',
         'httpstatus35; python_version<"3.5"',
     ],
+    extras_require={
+        'postgresql': ['SQLAlchemy[postgresql]'],
+    },
     cmdclass={
         'test': Tox,
     },
     entry_points={
         'console_scripts': [
             'hapcatd=hapcat.hapcat:main',
-            ]
-        }
+        ],
+    }
 )
