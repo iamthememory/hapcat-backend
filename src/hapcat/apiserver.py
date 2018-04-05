@@ -22,7 +22,7 @@ except ImportError:
 import hapcat
 
 
-def requesthandler(config):
+def requesthandler(config_):
     """Generate a request handler with the given config and db.
     """
 
@@ -30,8 +30,7 @@ def requesthandler(config):
         """Handle API server requests.
         """
 
-        config = config
-        db = db
+        config = config_
 
         server_version = 'Hapcat/' + hapcat.__version__
 
