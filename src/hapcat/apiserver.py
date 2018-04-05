@@ -22,97 +22,104 @@ except ImportError:
 import hapcat
 
 
-class APIRequestHandler(BaseHTTPRequestHandler):
-    """Handle API server requests.
+def requesthandler(config):
+    """Generate a request handler with the given config and db.
     """
 
-    server_version = 'Hapcat/' + hapcat.__version__
-
-    def do_GET(self):
-        """Handle a GET request.
+    class APIRequestHandler(BaseHTTPRequestHandler):
+        """Handle API server requests.
         """
 
-        url = self.sanitize_url(self.path)
+        config = config
+        db = db
 
-        # Get the handler.
-        try:
-            handler = self.handlers[url]
-            code, data = handler(self)
+        server_version = 'Hapcat/' + hapcat.__version__
 
-        except KeyError:
-            code = HTTPStatus.NOT_FOUND
-            data = 'Unknown API URL'.encode()
+        def do_GET(self):
+            """Handle a GET request.
+            """
 
-        self.send_response(code)
-        self.send_header('Content-Length', str(len(data)))
-        self.end_headers()
-        self.wfile.write(data)
+            url = self.sanitize_url(self.path)
 
-    @staticmethod
-    def sanitize_url(path):
-        """Sanitize a URL to turn it into the canonical URL.
-        """
+            # Get the handler.
+            try:
+                handler = self.handlers[url]
+                code, data = handler(self)
 
-        return path
+            except KeyError:
+                code = HTTPStatus.NOT_FOUND
+                data = 'Unknown API URL'.encode()
 
-    def suggestions(self):
-        """Retrieve suggestions.
+            self.send_response(code)
+            self.send_header('Content-Length', str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
 
-        FIXME: Don't use test data.
-        """
+        @staticmethod
+        def sanitize_url(path):
+            """Sanitize a URL to turn it into the canonical URL.
+            """
 
-        # Simulate creating and encoding JSON, instead of just sending the file
-        # as-is.
-        sugs = resource_string('hapcat', 'data/test-suggestions.json')
-        sugs = json.loads(sugs.decode())
+            return path
 
-        data = json.dumps(sugs).encode()
-        code = HTTPStatus.OK
+        def suggestions(self):
+            """Retrieve suggestions.
 
-        return code, data
+            FIXME: Don't use test data.
+            """
 
-    def serverinfo(self):
-        """Send server info.
-        """
+            # Simulate creating and encoding JSON, instead of just sending the
+            # file as-is.
+            sugs = resource_string('hapcat', 'data/test-suggestions.json')
+            sugs = json.loads(sugs.decode())
 
-        info = {
-            'server_version': hapcat.__version__,
-            'api_versions': [0],
-        }
+            data = json.dumps(sugs).encode()
+            code = HTTPStatus.OK
 
-        data = json.dumps(info).encode()
-        code = HTTPStatus.OK
+            return code, data
 
-        return code, data
+        def serverinfo(self):
+            """Send server info.
+            """
 
-    def send_error(self, *args, **kwargs):
-        """Send and log an error reply.
+            info = {
+                'server_version': hapcat.__version__,
+                'api_versions': [0],
+            }
 
-        Arguments are
+            data = json.dumps(info).encode()
+            code = HTTPStatus.OK
 
-        * code:    an HTTP error code
-                   3 digits
-        * message: a simple optional 1 line reason phrase.
-                   \*( HTAB / SP / VCHAR / %x80-FF )
-                   defaults to short entry matching the response code
-        * explain: a detailed message defaults to the long entry
-                   matching the response code.
+            return code, data
 
-        This sends an error response (so it must be called before any
-        output has been generated), logs the error, and finally sends
-        a piece of HTML explaining the error to the user.
+        def send_error(self, *args, **kwargs):
+            """Send and log an error reply.
 
-        This is a copy of the upstream with fixed formatting to prevent
-        Sphinx from choking up.
-        """
+            Arguments are
 
-        BaseHTTPRequestHandler.send_error(self, *args, **kwargs)
+            * code:    an HTTP error code
+                       3 digits
+            * message: a simple optional 1 line reason phrase.
+                       \*( HTAB / SP / VCHAR / %x80-FF )
+                       defaults to short entry matching the response code
+            * explain: a detailed message defaults to the long entry
+                       matching the response code.
 
-    def debug_urls(self):
-        """Send a list of URLs for debugging.
-        """
+            This sends an error response (so it must be called before any
+            output has been generated), logs the error, and finally sends
+            a piece of HTML explaining the error to the user.
 
-        basetemp = """\
+            This is a copy of the upstream with fixed formatting to prevent
+            Sphinx from choking up.
+            """
+
+            BaseHTTPRequestHandler.send_error(self, *args, **kwargs)
+
+        def debug_urls(self):
+            """Send a list of URLs for debugging.
+            """
+
+            basetemp = """\
 <html>
     <head>
         <title>
@@ -127,31 +134,33 @@ class APIRequestHandler(BaseHTTPRequestHandler):
 </html>\
 """
 
-        itemplate = """\
+            itemplate = """\
             <li>
                 <a href="%(url)s">%(urltext)s</a>
             </li>\
 """
 
-        urllist = []
+            urllist = []
 
-        for handler in sorted(self.handlers.keys()):
-            d = {
-                'url': handler,
-                'urltext': handler + ': ' + self.handlers[handler].__name__,
-            }
-            urllist.append(itemplate % d)
+            for handler in sorted(self.handlers.keys()):
+                d = {
+                    'url': handler,
+                    'urltext': handler + ': ' + self.handlers[handler].__name__,
+                }
+                urllist.append(itemplate % d)
 
-        text = (basetemp % '\n'.join(urllist)).encode()
+            text = (basetemp % '\n'.join(urllist)).encode()
 
-        return HTTPStatus.OK, text
+            return HTTPStatus.OK, text
 
-    handlers = {
-        '/': debug_urls,
-        '/api/serverinfo': serverinfo,
-        '/api/v0/serverinfo': serverinfo,
-        '/api/v0/suggestions': suggestions,
-    }
+        handlers = {
+            '/': debug_urls,
+            '/api/serverinfo': serverinfo,
+            '/api/v0/serverinfo': serverinfo,
+            '/api/v0/suggestions': suggestions,
+        }
+
+    return APIRequestHandler
 
 
 def daemon_listen(config):
@@ -163,6 +172,6 @@ def daemon_listen(config):
             config.get('apiserver', 'address'),
             config.getint('apiserver', 'port')
         ),
-        APIRequestHandler
+        requesthandler(config)
     )
     httpd.serve_forever()
