@@ -68,7 +68,7 @@ def main():
 
     print('Initializing database...')
 
-    engine, sessionfact = hapcat.db.initdb(config.get('database', 'dburl'))
+    engine, sessionfact = hapcat.db.initdb(config)
 
     print('Initializing Hapcat daemon...')
 
