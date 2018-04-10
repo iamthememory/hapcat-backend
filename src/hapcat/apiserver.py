@@ -45,6 +45,7 @@ class APIRequestHandler(BaseHTTPRequestHandler):
 
         self.send_response(code)
         self.send_header('Content-Length', str(len(data)))
+        self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
         self.wfile.write(data)
 
