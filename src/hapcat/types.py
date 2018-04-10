@@ -9,7 +9,7 @@ from sqlalchemy.dialects.postgresql import UUID as PostgresUUID
 import uuid
 
 from sqlalchemy.types import (
-    CHAR
+    CHAR,
     TypeDecorator,
 )
 
