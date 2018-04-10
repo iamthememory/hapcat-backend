@@ -6,12 +6,17 @@
 
 from __future__ import absolute_import, with_statement, print_function
 
-from sqlalchemy import (
+from sqlalchemy.schema import (
     Column
 )
 
 from hapcat.types import GUID
 from sqlalchemy.ext.declarative import declarative_base
+
+from sqlalchemy.types import (
+    UnicodeText,
+    Integer,
+)
 
 
 Base = declarative_base()
