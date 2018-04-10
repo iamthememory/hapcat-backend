@@ -162,7 +162,7 @@ def requesthandler(config_):
     return APIRequestHandler
 
 
-def daemon_listen(config):
+def daemon_listen(config, engine, sessionfact):
     """Listen and handle API requests.
     """
 
