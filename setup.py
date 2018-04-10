@@ -112,7 +112,13 @@ setup(
     package_dir={'hapcat': 'src/hapcat'},
     packages=['hapcat'],
     py_modules=[],
-    package_data={'hapcat': ['data/*']},
+    package_data={
+        'hapcat': [
+            'data/*',
+            'migrations/*',
+            'migrations/versions/*',
+        ]
+    },
     tests_require=[
         'SQLAlchemy',
         'alembic',
