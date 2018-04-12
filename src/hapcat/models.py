@@ -55,7 +55,11 @@ class Location(Base):
     name = Column(UnicodeText)
     address = Column(UnicodeText)
 
-    tags = association_proxy('location_tags', 'tag')
+    tags = association_proxy(
+        'location_tags',
+        'tag',
+        creator=lambda tag: LocationTag(tag_id=tag)
+    )
 
 class LocationTag(Base):
     __tablename__ = 'location_tag'
