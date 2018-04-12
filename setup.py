@@ -109,7 +109,7 @@ setup(
     author=authors,
     author_email=authors,
     url='https://github.com/iamthememory/hapcat',
-    package_dir={'hapcat': 'src/hapcat'},
+    package_dir={'': 'src'},
     packages=['hapcat'],
     py_modules=[],
     package_data={
