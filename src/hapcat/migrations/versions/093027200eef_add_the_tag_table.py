@@ -20,9 +20,9 @@ depends_on = None
 def upgrade():
     op.create_table(
         'tag',
-        sa.Column('id', sa.Integer()),
+        sa.Column('id', hapcat.types.GUID()),
         sa.Column('name', sa.UnicodeText, nullable=False),
-        sa.PrimaryKeyConstraint('id')
+        sa.PrimaryKeyConstraint('id', name=op.f('pk-tag'))
     )
 
 
