@@ -30,6 +30,17 @@ from sqlalchemy.types import (
 
 Base = declarative_base()
 
+# Set the constraint naming conventions.
+
+Base.metadata.naming_convention = {
+    'fk': 'fk-%(table_name)s-%(column_0_name)s-'
+        '%(referred_table_name)s-%(referred_column_0_name)s',
+    'pk': 'pk-%(table_name)s',
+    'ix': 'ix-%(table_name)s-%(column_0_label)s',
+    'ck': 'ck-%(table_name)s-%(constraint_name)s',
+    'uq': 'uq-%(table_name)s-%(column_0_name)s',
+}
+
 
 class Tag(Base):
     __tablename__ = 'tag'
