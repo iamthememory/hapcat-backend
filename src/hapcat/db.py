@@ -7,6 +7,12 @@
 from __future__ import absolute_import, with_statement, print_function
 
 import hapcat.models
+
+from hapcat.models import (
+    Tag,
+    Location,
+)
+
 import sqlalchemy
 import sqlalchemy.orm
 import alembic.config
@@ -38,11 +44,23 @@ def add_test_data(engine, sessionfact):
     # Load tags.
     for tag in testdata['tags'].values():
         session.add(
-            hapcat.models.Tag(
+            Tag(
                 id=tag['id'],
                 name=tag['name']
             )
         )
+
+    # Load locations.
+    for location in testdata['locations'].values():
+        newloc = Location(
+            id=location['id'],
+            name=location.get('name', None),
+            address=location.get('address', None)
+        )
+
+        newloc.tags.extend(location.get('tags', []))
+
+        session.add(newloc)
 
     session.commit()
     session.close()
