@@ -18,13 +18,14 @@ from sqlalchemy.orm import (
 
 from sqlalchemy.schema import (
     Column,
-    Table,
     ForeignKey,
+    Table,
 )
 
 from sqlalchemy.types import (
-    UnicodeText,
+    Boolean,
     Integer,
+    UnicodeText,
 )
 
 
