@@ -115,7 +115,9 @@ setup(
     package_data={
         'hapcat': [
             'data/*',
-            'migrations/*',
+            'migrations/README',
+            'migrations/env.py',
+            'migrations/script.py.mako',
             'migrations/versions/*',
         ]
     },
