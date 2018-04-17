@@ -10,6 +10,7 @@ import argparse
 import sys
 
 import hapcat
+import hapcat.db
 import hapcat.apiserver
 import hapcat.config
 
@@ -65,9 +66,13 @@ def main():
 
     del args
 
+    print('Initializing database...')
+
+    engine, sessionfact = hapcat.db.initdb(config)
+
     print('Initializing Hapcat daemon...')
 
-    hapcat.apiserver.daemon_listen(config)
+    hapcat.apiserver.daemon_listen(config, engine, sessionfact)
 
 
 if __name__ == '__main__':
