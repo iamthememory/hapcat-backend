@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.0.2.dev5
+------------------
+
+Fixes:
+
+- Adjust package_data so wheel creation works
+
 Version 0.0.2.dev4
 ------------------
 
