@@ -57,13 +57,3 @@ def dump_routes():
         }
 
     return rules
-
-def daemon_listen(config, engine, sessionfact):
-    """Listen and handle API requests.
-    """
-
-    app.run(
-        host=config.get('apiserver', 'address'),
-        port=config.getint('apiserver', 'port'),
-    )
-

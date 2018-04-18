@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""This module does stuff.
+"""The main hapcat entrypoints.
 """
 
 from __future__ import absolute_import, print_function
 
 import argparse
+import os
 import sys
 
 import hapcat
-import hapcat.db
 import hapcat.apiserver
 import hapcat.config
+import hapcat.db
 
 
 def make_argparser():
@@ -54,6 +55,8 @@ def main():
     """Start the Hapcat daemon.
     """
 
+    from hapcat import app
+
     # Parse our arguments.
     args = make_argparser().parse_args()
 
@@ -61,18 +64,17 @@ def main():
         hapcat.config.create_config(args.genconfig)
         return
 
-    # Parse/generate our configuration.
-    config = hapcat.config.parse_config(args.config)
+    # Load our non-environment configuration.
+
+    with app.app_context():
+        app.iniconfig.readfp(args.config)
 
     del args
 
-    print('Initializing database...')
-
-    engine, sessionfact = hapcat.db.initdb(config)
-
-    print('Initializing Hapcat daemon...')
-
-    hapcat.apiserver.daemon_listen(config, engine, sessionfact)
+    app.run(
+        host=app.iniconfig.get('apiserver', 'address'),
+        port=app.iniconfig.getint('apiserver', 'port'),
+    )
 
 
 if __name__ == '__main__':
