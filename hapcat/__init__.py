@@ -17,8 +17,11 @@ import configparser
 import flask_api
 import flask_cors
 import flask_ini
+import flask_migrate
+import flask_sqlalchemy
 import os
 import pkg_resources
+
 
 app = flask_api.FlaskAPI(
     'hapcat',
@@ -42,6 +45,15 @@ with app.app_context():
     if envconf:
         app.iniconfig.read(envconf)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = app.iniconfig.get('database', 'dburl')
+
+db = flask_sqlalchemy.SQLAlchemy(app)
+migrate = flask_migrate.Migrate(
+    app,
+    db,
+    directory=pkg_resources.resource_filename('hapcat', 'migrations'),
+)
+
 
 flask_cors.CORS(
     app,
@@ -49,3 +61,4 @@ flask_cors.CORS(
 )
 
 import hapcat.apiserver
+import hapcat.models

@@ -125,6 +125,8 @@ setup(
         'enum34; python_version<"3.4"',
         'flask',
         'flask-cors',
+        'flask_migrate',
+        'flask_sqlalchemy',
         'httpstatus35; python_version<"3.5"',
         'tox',
     ],
@@ -139,6 +141,8 @@ setup(
         'enum34; python_version<"3.4"',
         'flask',
         'flask-cors',
+        'flask_migrate',
+        'flask_sqlalchemy',
         'httpstatus35; python_version<"3.5"',
     ],
     extras_require={

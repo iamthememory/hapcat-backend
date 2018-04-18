@@ -8,32 +8,14 @@ from __future__ import absolute_import, with_statement, print_function
 
 from hapcat.types import GUID
 
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.ext.associationproxy import association_proxy
+from hapcat import db
 
-from sqlalchemy.orm import (
-    backref,
-    relationship,
-)
-
-from sqlalchemy.schema import (
-    Column,
-    ForeignKey,
-    Table,
-)
-
-from sqlalchemy.types import (
-    Boolean,
-    Integer,
-    UnicodeText,
-)
-
-
-Base = declarative_base()
+import sqlalchemy.ext.associationproxy
+db.association_proxy = sqlalchemy.ext.associationproxy.association_proxy
 
 # Set the constraint naming conventions.
 
-Base.metadata.naming_convention = {
+db.Model.metadata.naming_convention = {
     'fk': 'fk-%(table_name)s-%(column_0_name)s-'
         '%(referred_table_name)s-%(referred_column_0_name)s',
     'pk': 'pk-%(table_name)s',
@@ -43,33 +25,39 @@ Base.metadata.naming_convention = {
 }
 
 
-class Tag(Base):
+class Tag(db.Model):
     __tablename__ = 'tag'
 
-    id = Column(GUID, primary_key=True)
-    name = Column(UnicodeText, nullable=False)
+    id = db.Column(GUID, primary_key=True)
+    name = db.Column(db.UnicodeText, nullable=False)
 
-class Location(Base):
+class Location(db.Model):
     __tablename__ = 'location'
 
-    id = Column(GUID, primary_key=True)
-    name = Column(UnicodeText)
-    address = Column(UnicodeText)
+    id = db.Column(GUID, primary_key=True)
+    name = db.Column(db.UnicodeText)
+    address = db.Column(db.UnicodeText)
 
-    tags = association_proxy(
+    tags = db.association_proxy(
         'location_tags',
         'tag',
         creator=lambda tag: LocationTag(tag_id=tag)
     )
 
-class LocationTag(Base):
+class LocationTag(db.Model):
     __tablename__ = 'location_tag'
-    location_id = Column(GUID, ForeignKey('location.id'), primary_key=True)
-    tag_id = Column(GUID, ForeignKey('tag.id'), primary_key=True)
 
-    location = relationship(
-        Location,
-        backref=backref('location_tags', cascade='all, delete-orphan')
+    location_id = db.Column(
+        GUID,
+        db.ForeignKey('location.id'),
+        primary_key=True
     )
 
-    tag = relationship('Tag')
+    tag_id = db.Column(GUID, db.ForeignKey('tag.id'), primary_key=True)
+
+    location = db.relationship(
+        Location,
+        backref=db.backref('location_tags', cascade='all, delete-orphan')
+    )
+
+    tag = db.relationship('Tag')
