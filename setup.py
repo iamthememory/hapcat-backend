@@ -113,23 +113,30 @@ setup(
     packages=['hapcat'],
     py_modules=[],
     include_package_data=True,
+    zip_safe=False,
     tests_require=[
+        'Flask-API',
         'SQLAlchemy',
         'alembic',
         'argparse; python_version<"2.7" or '
             '(python_version>="3.0" and python_version<"3.2")',
         'configparser; python_version<"3.2"',
         'enum34; python_version<"3.4"',
+        'flask',
+        'flask-cors',
         'httpstatus35; python_version<"3.5"',
         'tox',
     ],
     install_requires=[
+        'Flask-API',
         'SQLAlchemy',
         'alembic',
         'argparse; python_version<"2.7" or '
             '(python_version>="3.0" and python_version<"3.2")',
         'configparser; python_version<"3.2"',
         'enum34; python_version<"3.4"',
+        'flask',
+        'flask-cors',
         'httpstatus35; python_version<"3.5"',
     ],
     extras_require={
