@@ -14,8 +14,8 @@ from hapcat import app
 from flask import json
 import flask
 
-from flask.ext.api.decorators import set_renderers
-from flask.ext.api.renderers import JSONRenderer, HTMLRenderer
+from flask_api.decorators import set_renderers
+from flask_api.renderers import JSONRenderer, HTMLRenderer
 
 @app.route('/api/v<int:version>/serverinfo/')
 def serverinfo(version):
