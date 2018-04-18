@@ -109,18 +109,10 @@ setup(
     author=authors,
     author_email=authors,
     url='https://github.com/iamthememory/hapcat',
-    package_dir={'': 'src'},
+    package_dir={'hapcat': 'hapcat'},
     packages=['hapcat'],
     py_modules=[],
-    package_data={
-        'hapcat': [
-            'data/*',
-            'migrations/README',
-            'migrations/env.py',
-            'migrations/script.py.mako',
-            'migrations/versions/*',
-        ]
-    },
+    include_package_data=True,
     tests_require=[
         'SQLAlchemy',
         'alembic',

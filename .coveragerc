@@ -1,9 +1,9 @@
 [paths]
-source = src
+source = hapcat
 
 [run]
 branch = True
-source = src
+source = hapcat
 parallel = True
 
 [report]
