@@ -62,3 +62,6 @@ flask_cors.CORS(
 
 import hapcat.apiserver
 import hapcat.models
+
+with app.app_context():
+    flask_migrate.upgrade()
