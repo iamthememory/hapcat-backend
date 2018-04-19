@@ -31,6 +31,8 @@ from sqlalchemy.exc import (
 
 from hapcat.models import *
 
+import hapcat.dbutil
+
 from flask_api.decorators import set_renderers
 from flask_api.renderers import JSONRenderer, HTMLRenderer
 from flask_api import status
@@ -75,6 +77,16 @@ def dump_routes():
         }
 
     return rules
+
+@app.route('/reloadtestdata/')
+def load_testdata():
+    """Load our test data.
+    """
+
+    hapcat.dbutil.load_test_data()
+
+    return {'success': 'true'}
+
 
 @app.route('/api/v<int:version>/registration/', methods=['POST'])
 def register(version):
