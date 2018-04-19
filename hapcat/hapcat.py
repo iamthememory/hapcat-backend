@@ -69,6 +69,11 @@ def main():
     with app.app_context():
         app.iniconfig.readfp(args.config)
 
+    app.config['SQLALCHEMY_DATABASE_URI'] = app.iniconfig.get(
+        'database',
+        'dburl'
+    )
+
     del args
 
     app.run(
