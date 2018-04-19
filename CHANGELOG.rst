@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 0.0.2.dev9
+------------------
+
+Fixes:
+
+- Fix absolute imports on Python 2.7
+- Fix the database URI not being loaded when run as ``hapcat -c <config>``
+
 Version 0.0.2.dev8
 ------------------
 
