@@ -13,7 +13,7 @@ import sys
 import hapcat
 import hapcat.apiserver
 import hapcat.config
-import hapcat.db
+import hapcat.dbutil
 
 
 def make_argparser():

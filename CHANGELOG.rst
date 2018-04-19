@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.0.2.dev8
+------------------
+
+Fixes:
+
+- Fix the dbutil import in hapcat.py after the module rename
+
 Version 0.0.2.dev7
 ------------------
 
