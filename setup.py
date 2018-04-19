@@ -109,35 +109,42 @@ setup(
     author=authors,
     author_email=authors,
     url='https://github.com/iamthememory/hapcat',
-    package_dir={'': 'src'},
+    package_dir={'hapcat': 'hapcat'},
     packages=['hapcat'],
     py_modules=[],
-    package_data={
-        'hapcat': [
-            'data/*',
-            'migrations/README',
-            'migrations/env.py',
-            'migrations/script.py.mako',
-            'migrations/versions/*',
-        ]
-    },
+    include_package_data=True,
+    zip_safe=False,
     tests_require=[
+        'Flask-API',
+        'Flask-ini'
         'SQLAlchemy',
         'alembic',
         'argparse; python_version<"2.7" or '
             '(python_version>="3.0" and python_version<"3.2")',
         'configparser; python_version<"3.2"',
         'enum34; python_version<"3.4"',
+        'flask',
+        'flask-bcrypt',
+        'flask-cors',
+        'flask_migrate',
+        'flask_sqlalchemy',
         'httpstatus35; python_version<"3.5"',
         'tox',
     ],
     install_requires=[
+        'Flask-API',
+        'Flask-ini'
         'SQLAlchemy',
         'alembic',
         'argparse; python_version<"2.7" or '
             '(python_version>="3.0" and python_version<"3.2")',
         'configparser; python_version<"3.2"',
         'enum34; python_version<"3.4"',
+        'flask',
+        'flask-bcrypt',
+        'flask-cors',
+        'flask_migrate',
+        'flask_sqlalchemy',
         'httpstatus35; python_version<"3.5"',
     ],
     extras_require={

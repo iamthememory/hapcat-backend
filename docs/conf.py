@@ -24,8 +24,7 @@ import shlex
 #sys.path.insert(0, os.path.abspath('.'))
 docdir = os.path.abspath(os.path.dirname(__file__))
 rootdir = os.path.dirname(docdir)
-srcdir = os.path.abspath(os.path.join(rootdir, 'src'))
-sys.path.insert(0, os.path.abspath(srcdir))
+sys.path.insert(0, os.path.abspath(rootdir))
 
 # -- General configuration ------------------------------------------------
 
