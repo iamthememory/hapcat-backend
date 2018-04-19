@@ -1,6 +1,16 @@
 Changelog
 =========
 
+Version 0.0.2.dev6
+------------------
+
+Features:
+
+- Move to Flask-API
+- Add a user table
+- Add a user registration URL
+- Add a URL to reload test data
+
 Version 0.0.2.dev5
 ------------------
 
