@@ -15,6 +15,7 @@ __api_versions__ = [
 
 import configparser
 import flask_api
+import flask_bcrypt
 import flask_cors
 import flask_ini
 import flask_migrate
@@ -48,6 +49,9 @@ with app.app_context():
 app.config['SQLALCHEMY_DATABASE_URI'] = app.iniconfig.get('database', 'dburl')
 
 db = flask_sqlalchemy.SQLAlchemy(app)
+
+bcrypt = flask_bcrypt.Bcrypt(app)
+
 migrate = flask_migrate.Migrate(
     app,
     db,

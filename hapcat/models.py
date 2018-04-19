@@ -8,10 +8,18 @@ from __future__ import absolute_import, with_statement, print_function
 
 from hapcat.types import GUID
 
-from hapcat import db
+from hapcat import (
+    app,
+    bcrypt,
+    db,
+)
 
 import sqlalchemy.ext.associationproxy
 db.association_proxy = sqlalchemy.ext.associationproxy.association_proxy
+
+import sqlalchemy.ext.hybrid
+db.hybrid_property = sqlalchemy.ext.hybrid.hybrid_property
+db.hybrid_method = sqlalchemy.ext.hybrid.hybrid_method
 
 # Set the constraint naming conventions.
 
@@ -61,3 +69,45 @@ class LocationTag(db.Model):
     )
 
     tag = db.relationship('Tag')
+
+class User(db.Model):
+    __tablename__ = 'user'
+
+    def __init__(self, username, email, date_of_birth, password):
+        self.username = username
+        self.email = email
+        self.date_of_birth = date_of_birth
+        self.password = password
+
+    username = db.Column(
+        db.UnicodeText,
+        primary_key=True,
+    )
+
+    email = db.Column(
+        db.UnicodeText,
+        nullable=False,
+    )
+
+    date_of_birth = db.Column(
+        db.Date,
+        nullable=False,
+    )
+
+    _password = db.Column(
+        'password_hash',
+        db.Binary(60),
+        nullable=False,
+    )
+
+    @db.hybrid_property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, plainpw):
+        self._password = bcrypt.generate_password_hash(plainpw)
+
+    @db.hybrid_method
+    def is_correct_password(self, plainpw):
+        return bcrypt.check_password_hash(self.password, plainpw)
