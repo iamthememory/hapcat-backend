@@ -3,6 +3,10 @@
 """The Hapcat Backend package.
 """
 
+from future import (
+    absolute_import,
+)
+
 __version__ = '0.0.2.dev8'
 
 __description__ = """\
