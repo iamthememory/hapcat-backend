@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.0.2.dev7
+------------------
+
+Fixes:
+
+- Fix a syntax error in setup.py
+
 Version 0.0.2.dev6
 ------------------
 

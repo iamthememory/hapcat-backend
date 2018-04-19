@@ -116,7 +116,7 @@ setup(
     zip_safe=False,
     tests_require=[
         'Flask-API',
-        'Flask-ini'
+        'Flask-ini',
         'SQLAlchemy',
         'alembic',
         'argparse; python_version<"2.7" or '
@@ -133,7 +133,7 @@ setup(
     ],
     install_requires=[
         'Flask-API',
-        'Flask-ini'
+        'Flask-ini',
         'SQLAlchemy',
         'alembic',
         'argparse; python_version<"2.7" or '
