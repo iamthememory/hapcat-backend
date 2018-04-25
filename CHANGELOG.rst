@@ -1,6 +1,18 @@
 Changelog
 =========
 
+Version 0.0.2.dev10
+-------------------
+
+Fixes:
+
+- Only attempt to load configuration from the command line if given
+- Correct the ``__future__`` module typo.
+
+Features:
+
+- Add uWSGI configuration to the hapcat configuration
+
 Version 0.0.2.dev9
 ------------------
 
