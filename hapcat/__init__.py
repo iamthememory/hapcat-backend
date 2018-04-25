@@ -3,7 +3,7 @@
 """The Hapcat Backend package.
 """
 
-from future import (
+from __future__ import (
     absolute_import,
 )
 
