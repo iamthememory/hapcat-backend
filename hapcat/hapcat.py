@@ -66,13 +66,14 @@ def main():
 
     # Load our non-environment configuration.
 
-    with app.app_context():
-        app.iniconfig.readfp(args.config)
+    if args.config:
+        with app.app_context():
+            app.iniconfig.readfp(args.config)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = app.iniconfig.get(
-        'database',
-        'dburl'
-    )
+        app.config['SQLALCHEMY_DATABASE_URI'] = app.iniconfig.get(
+            'database',
+            'dburl'
+        )
 
     del args
 
