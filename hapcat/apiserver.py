@@ -99,6 +99,7 @@ def register(version):
     dob = data['date_of_birth']
 
     newuser = User(
+        id=uuid.uuid4(),
         username=data['username'],
         email=data['email'],
         date_of_birth=datetime.date(
