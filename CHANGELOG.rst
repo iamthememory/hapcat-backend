@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.0.4.dev0
+------------------
+
+Fixes:
+
+- Add a compatibility ``secrets`` module for Python before 3.6
+
 Version 0.0.3
 -------------
 
