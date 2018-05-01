@@ -11,6 +11,7 @@ flask-bcrypt
 flask-cors
 flask_migrate
 flask_sqlalchemy
+furl
 httpstatus35; python_version<"3.5"
 passlib
 recommonmark

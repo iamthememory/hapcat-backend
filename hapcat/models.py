@@ -9,6 +9,7 @@ from __future__ import absolute_import, with_statement, print_function
 from sqlalchemy_utils.types import (
     EmailType,
     PasswordType,
+    URLType,
     UUIDType,
 )
 
@@ -181,6 +182,12 @@ class Event(UUIDObject):
         creator=lambda tag: EventTag(tag_id=tag)
     )
 
+    photos = db.association_proxy(
+        'event_photos',
+        'photo',
+        creator=lambda photo: EventPhoto(photo_id=photo)
+    )
+
     __mapper_args__ = {
         'polymorphic_identity': 'event',
     }
@@ -192,6 +199,7 @@ class Event(UUIDObject):
             'location': self.rawlocation_id,
             'tags': [tag.id for tag in self.tags],
             'type': 'event',
+            'photos': [str(photo.photourl) for photo in self.photos],
         }
 
 
@@ -218,8 +226,56 @@ class EventTag(db.Model):
     tag = db.relationship('Tag')
 
 
-#class Photo(UUIDObject):
-#    __tablename__ = 'photo'
+class Photo(UUIDObject):
+    __tablename__ = 'photo'
+
+    id = db.Column(
+        UUIDType,
+        db.ForeignKey('uuidobject.id', ondelete='cascade'),
+        primary_key=True,
+    )
+
+    photourl = db.Column(
+        URLType,
+        nullable=False,
+        unique=True,
+    )
+
+    events = db.association_proxy(
+        'event_photos',
+        'photo',
+        creator=lambda event: EventPhoto(event_id=photo),
+    )
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'photo'
+    }
+
+
+class EventPhoto(db.Model):
+    __tablename__ = 'event_photo'
+
+    event_id = db.Column(
+        UUIDType,
+        db.ForeignKey('event.id', ondelete='cascade'),
+        primary_key=True,
+    )
+
+    photo_id = db.Column(
+        UUIDType,
+        db.ForeignKey('photo.id', ondelete='cascade'),
+        primary_key=True,
+    )
+
+    event = db.relationship(
+        Event,
+        backref=db.backref('event_photos', cascade='all, delete-orphan'),
+    )
+
+    photo = db.relationship(
+        Photo,
+        backref=db.backref('event_photos', cascade='all, delete-orphan'),
+    )
 
 
 class User(UUIDObject):
