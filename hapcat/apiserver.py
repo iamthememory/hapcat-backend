@@ -88,7 +88,7 @@ def serverinfo_redirect():
 
     .. http:example:: curl
 
-        GET /api/serverinfo/ HTTP/1.1
+        GET /api/serverinfo/ HTTP/1.0
 
     **Example response**:
 
@@ -96,7 +96,6 @@ def serverinfo_redirect():
 
         HTTP/1.0 302 FOUND
         Location: http://localhost:8080/api/v0/serverinfo/
-
     """
 
     return flask.redirect('/api/v0/serverinfo/')
@@ -106,16 +105,80 @@ def tag(
         version,
         tag,
     ):
+    """Get the given tag's info.
+
+    :query version: The version of the API currently in use
+
+    :query tag: The UUID of the tag to get info for
+
+    :statuscode 200: Success
+
+    :statuscode 400: Invalid tag ID
+
+    **Example request**:
+
+    .. http:example:: curl
+
+        GET /api/v0/tag/d927d94f-beb8-4295-ac78-5c00e6dc217c HTTP/1.0
+        Accept: application/json
+
+    **Example success**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json
+
+        {
+            "id": "d927d94f-beb8-4295-ac78-5c00e6dc217c",
+            "name": "healthy",
+            "type": "tag"
+        }
+
+    **Example failure**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 400 BAD REQUEST
+        Content-Type: application/json
+
+        {
+            "status": "failure",
+            "message": "Invalid tag ID"
+        }
     """
-    """
-    return {}
+
+    try:
+        tagid = uuid.UUID(tag)
+        tagobj = db.session.query(Tag).filter_by(id=tagid).first()
+
+        if tagobj:
+            return tagobj.serialize()
+
+        else:
+            return (
+                {
+                    'status': 'failure',
+                    'message': 'No such tag',
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+
+    except ValueError:
+        return (
+            {
+                'status': 'failure',
+                'message': 'Invalid tag ID',
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
 
 @app.route('/api/v<int:version>/location/<location>')
 def location(
         version,
         location,
     ):
-    """
+    """FIXME: Stub
     """
     return {}
 
@@ -124,7 +187,7 @@ def event(
         version,
         event,
     ):
-    """
+    """FIXME: Stub
     """
     return {}
 
