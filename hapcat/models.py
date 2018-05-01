@@ -18,6 +18,8 @@ from hapcat import (
     db,
 )
 
+from zxcvbn import zxcvbn
+
 import sqlalchemy.ext.associationproxy
 db.association_proxy = sqlalchemy.ext.associationproxy.association_proxy
 
@@ -366,6 +368,23 @@ class User(UUIDObject):
     __mapper_args__ = {
         'polymorphic_identity': 'user'
     }
+
+    @staticmethod
+    def checkpwstrength(
+        password,
+        username,
+        email,
+        minscore=3,
+    ):
+        """Check the user's password strength.
+        """
+
+        results = zxcvbn(password, user_inputs=[username, email])
+
+        if results['score'] >= minscore:
+            return (True, results['feedback'])
+        else:
+            return (False, results['feedback'])
 
 
 class Secret(db.Model):

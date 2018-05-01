@@ -587,6 +587,8 @@ def register(version):
 
     :statuscode 200: Success
 
+    :statuscode 400: Insufficient password strength.
+
     :statuscode 409: The username is already taken.
 
     **Example request**:
@@ -620,7 +622,7 @@ def register(version):
             "username": "user"
         }
 
-    **Example failure**:
+    **Example failures**:
 
     .. sourcecode:: http
 
@@ -632,12 +634,45 @@ def register(version):
             "username": "user",
             "message": "Username already exists"
         }
+
+    .. sourcecode:: http
+
+        HTTP/1.0 400 BAD REQUEST
+        Content-Type: application/json
+
+        {
+            "status": "failure",
+            "username": "user",
+            "message": "Insufficiently secure password",
+            "details": {
+                "warning": "This is a top-10 common password.",
+                "suggestions": [
+                    "Add another word or two. Uncommon words are better."
+                ]
+            }
+        }
     """
 
     data = flask.request.get_json(
         force=True,
     )
     dob = data['date_of_birth']
+
+    # Check the password strength.
+    strong, feedback = User.checkpwstrength(
+        data['password'],
+        data['username'],
+        data['email'],
+    )
+
+    if not strong:
+        return ({
+            'status': 'failure',
+            'username': data['username'],
+            'message': 'Insufficiently secure password',
+            'details': feedback,
+        }, status.HTTP_400_BAD_REQUEST)
+
 
     newuser = User(
         id=uuid.uuid4(),

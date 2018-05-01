@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.0.4.dev1
+------------------
+
+Features:
+
+- Add a password strength check
+
 Version 0.0.4.dev0
 ------------------
 
