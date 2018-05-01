@@ -366,3 +366,17 @@ class User(UUIDObject):
     __mapper_args__ = {
         'polymorphic_identity': 'user'
     }
+
+
+class Secret(db.Model):
+    __tablename__ = 'secret'
+
+    id = db.Column(
+        db.Unicode,
+        primary_key=True,
+    )
+
+    payload = db.Column(
+        db.LargeBinary,
+        nullable=False,
+    )
