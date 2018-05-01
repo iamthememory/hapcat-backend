@@ -6,11 +6,14 @@
 
 from __future__ import absolute_import, with_statement, print_function
 
-from hapcat.types import GUID
+from sqlalchemy_utils.types import (
+    EmailType,
+    PasswordType,
+    UUIDType,
+)
 
 from hapcat import (
     app,
-    bcrypt,
     db,
 )
 
@@ -36,7 +39,7 @@ db.Model.metadata.naming_convention = {
 class UUIDObject(db.Model):
     __tablename__ = 'uuidobject'
 
-    id = db.Column(GUID, primary_key=True)
+    id = db.Column(UUIDType, primary_key=True)
     type = db.Column(db.String(32))
 
     __mapper_args__ = {
@@ -48,7 +51,7 @@ class UUIDObject(db.Model):
 class Tag(UUIDObject):
     __tablename__ = 'tag'
 
-    id = db.Column(GUID, db.ForeignKey('uuidobject.id'), primary_key=True)
+    id = db.Column(UUIDType, db.ForeignKey('uuidobject.id'), primary_key=True)
     name = db.Column(db.UnicodeText, nullable=False)
 
     __mapper_args__ = {
@@ -66,7 +69,7 @@ class Tag(UUIDObject):
 class RawLocation(UUIDObject):
     __tablename__ = 'rawlocation'
 
-    id = db.Column(GUID, db.ForeignKey('uuidobject.id'), primary_key=True)
+    id = db.Column(UUIDType, db.ForeignKey('uuidobject.id'), primary_key=True)
     address = db.Column(db.UnicodeText)
 
     __mapper_args__ = {
@@ -85,7 +88,7 @@ class RawLocation(UUIDObject):
 class Location(RawLocation):
     __tablename__ = 'location'
 
-    id = db.Column(GUID, db.ForeignKey('rawlocation.id'), primary_key=True)
+    id = db.Column(UUIDType, db.ForeignKey('rawlocation.id'), primary_key=True)
     name = db.Column(db.UnicodeText, nullable=False)
 
     tags = db.association_proxy(
@@ -113,12 +116,12 @@ class LocationTag(db.Model):
     __tablename__ = 'location_tag'
 
     location_id = db.Column(
-        GUID,
+        UUIDType,
         db.ForeignKey('location.id'),
         primary_key=True
     )
 
-    tag_id = db.Column(GUID, db.ForeignKey('tag.id'), primary_key=True)
+    tag_id = db.Column(UUIDType, db.ForeignKey('tag.id'), primary_key=True)
 
     location = db.relationship(
         Location,
@@ -132,7 +135,7 @@ class Event(UUIDObject):
     __tablename__ = 'event'
 
     id = db.Column(
-        GUID,
+        UUIDType,
         db.ForeignKey('uuidobject.id'),
         primary_key=True
     )
@@ -143,7 +146,7 @@ class Event(UUIDObject):
     )
 
     rawlocation_id = db.Column(
-        GUID,
+        UUIDType,
         db.ForeignKey('rawlocation.id'),
         nullable=False
     )
@@ -177,12 +180,12 @@ class EventTag(db.Model):
     __tablename__ = 'event_tag'
 
     event_id = db.Column(
-        GUID,
+        UUIDType,
         db.ForeignKey('event.id'),
         primary_key=True
     )
 
-    tag_id = db.Column(GUID, db.ForeignKey('tag.id'), primary_key=True)
+    tag_id = db.Column(UUIDType, db.ForeignKey('tag.id'), primary_key=True)
 
     event = db.relationship(
         Event,
@@ -190,6 +193,10 @@ class EventTag(db.Model):
     )
 
     tag = db.relationship('Tag')
+
+
+class Photo(UUIDObject):
+    __tablename__ = 'photo'
 
 
 class User(UUIDObject):
@@ -202,7 +209,7 @@ class User(UUIDObject):
         self.date_of_birth = date_of_birth
         self.password = password
 
-    id = db.Column(GUID, db.ForeignKey('uuidobject.id'), primary_key=True)
+    id = db.Column(UUIDType, db.ForeignKey('uuidobject.id'), primary_key=True)
 
     username = db.Column(
         db.UnicodeText,
@@ -212,7 +219,7 @@ class User(UUIDObject):
     )
 
     email = db.Column(
-        db.UnicodeText,
+        EmailType,
         nullable=False,
     )
 
@@ -221,24 +228,19 @@ class User(UUIDObject):
         nullable=False,
     )
 
-    _password = db.Column(
-        'password_hash',
-        db.Binary(60),
+    password = db.Column(
+        PasswordType(
+            schemes=[
+                'argon2',
+                'bcrypt',
+            ],
+            default='argon2',
+            deprecated=['auto'],
+        ),
         nullable=False,
+        unique=False,
     )
 
     __mapper_args__ = {
         'polymorphic_identity': 'user'
     }
-
-    @db.hybrid_property
-    def password(self):
-        return self._password
-
-    @password.setter
-    def password(self, plainpw):
-        self._password = bcrypt.generate_password_hash(plainpw)
-
-    @db.hybrid_method
-    def is_correct_password(self, plainpw):
-        return bcrypt.check_password_hash(self.password, plainpw)

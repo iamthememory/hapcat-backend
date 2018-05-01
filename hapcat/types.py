@@ -7,6 +7,7 @@
 from sqlalchemy.dialects.postgresql import UUID as PostgresUUID
 
 import uuid
+import warnings
 
 from sqlalchemy.types import (
     CHAR,
@@ -22,6 +23,11 @@ class GUID(TypeDecorator):
 
     This is taken from the SQLAlchemy examples with minor modifications.
     """
+
+    warnings.warn(
+        'Replaced with sqlalchemy_utils.types.UUIDType',
+        DeprecationWarning,
+    )
 
     impl = CHAR
 

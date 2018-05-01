@@ -8,6 +8,7 @@ Create Date: ${create_date}
 from alembic import op
 import sqlalchemy as sa
 import hapcat.types
+import sqlalchemy_utils.types
 ${imports if imports else ""}
 
 # revision identifiers, used by Alembic.
