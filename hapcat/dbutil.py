@@ -7,6 +7,7 @@
 from __future__ import absolute_import, with_statement, print_function
 
 import hapcat.models
+import uuid
 
 from hapcat.models import *
 
@@ -96,6 +97,17 @@ def load_test_data():
 
                 newevent.tags.extend(event['tags'])
 
+                newphotos = [
+                    Photo(
+                        id=uuid.uuid4(),
+                        photourl=photo,
+                    )
+                    for photo in event['photos']
+                ]
+
+                session.add_all(newphotos)
+
+                newevent.photos.extend([p.id for p in newphotos])
                 session.add(newevent)
         except IntegrityError:
             app.logger.debug(
