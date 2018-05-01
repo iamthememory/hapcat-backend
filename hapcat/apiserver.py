@@ -101,6 +101,33 @@ def serverinfo_redirect():
 
     return flask.redirect('/api/v0/serverinfo/')
 
+@app.route('/api/v<int:version>/tag/<tag>')
+def tag(
+        version,
+        tag,
+    ):
+    """
+    """
+    return {}
+
+@app.route('/api/v<int:version>/location/<location>')
+def location(
+        version,
+        location,
+    ):
+    """
+    """
+    return {}
+
+@app.route('/api/v<int:version>/event/<event>')
+def event(
+        version,
+        event,
+    ):
+    """
+    """
+    return {}
+
 
 @app.route('/api/v<int:version>/suggestions/')
 def suggestions(version):
