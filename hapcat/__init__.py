@@ -5,6 +5,7 @@
 
 from __future__ import (
     absolute_import,
+    division,
 )
 
 __version__ = '0.0.2'
@@ -24,9 +25,10 @@ import flask_ini
 import flask_migrate
 import flask_sqlalchemy
 import os
-import pkg_resources
-import sys
 import os.path
+import pkg_resources
+import secrets
+import sys
 
 
 app = flask_api.FlaskAPI(
@@ -73,3 +75,28 @@ import hapcat.models
 if os.path.basename(sys.argv[0]) not in ['sphinx-build', 'sphinx-build.exe']:
     with app.app_context():
         flask_migrate.upgrade()
+
+def makejwtsecret(bits=512):
+    """Read or generate the JWT secret.
+    """
+
+    key = u'jwtsecret'
+
+    from hapcat.models import Secret
+
+    # First try to get the secret.
+    secret = db.session.query(Secret).filter(Secret.id == key).first()
+
+    if secret:
+        return secret.payload
+
+    payload = secrets.token_bytes(bits // 8)
+
+    secret = Secret(id=key, payload=payload)
+
+    db.session.add(secret)
+    db.session.commit()
+
+    return secret.payload
+
+jwtsecret = makejwtsecret()
