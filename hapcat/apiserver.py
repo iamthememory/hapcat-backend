@@ -115,6 +115,12 @@ def tag(
 
     :statuscode 400: Invalid tag ID
 
+    :>json UUID id: The tag ID
+
+    :>json string name: The tag name
+
+    :>json string type: ``tag``
+
     **Example request**:
 
     .. http:example:: curl
