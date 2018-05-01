@@ -227,6 +227,11 @@ def suggestions(
 
 @app.route('/')
 def dump_routes():
+    """Dump the routes for debugging.
+
+    See `the API docs
+    <https://hapcat-backend.readthedocs.io/en/latest/api.html>`_ for details.
+    """
     rules = {}
 
     for rule in app.url_map.iter_rules():
