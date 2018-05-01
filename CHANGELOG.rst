@@ -1,6 +1,23 @@
 Changelog
 =========
 
+Version 0.0.2
+-------------
+
+Features:
+
+- Use globally unique IDs
+- Document the HTTP API in Sphinx
+- Add events
+- Add URLs to query a tag, event, or location
+- Generate suggestions from the database
+- Add a ``/debug/dropalldata/`` URL to drop data in debugging
+- Add photos for locations and events
+
+API Changes:
+
+- Move ``/reloadtestdata/`` to ``/debug/reloadtestdata/``
+
 Version 0.0.2.dev10
 -------------------
 
