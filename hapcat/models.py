@@ -113,6 +113,12 @@ class Location(RawLocation):
         creator=lambda tag: LocationTag(tag_id=tag)
     )
 
+    photos = db.association_proxy(
+        'location_photos',
+        'photo',
+        creator=lambda photo: LocationPhoto(photo_id=photo)
+    )
+
     __mapper_args__ = {
         'polymorphic_identity': 'location',
     }
@@ -125,6 +131,7 @@ class Location(RawLocation):
             'ephemeral': False,
             'tags': [tag.id for tag in self.tags],
             'type': 'location',
+            'photos': [str(photo.photourl) for photo in self.photos],
         }
 
 
@@ -243,8 +250,14 @@ class Photo(UUIDObject):
 
     events = db.association_proxy(
         'event_photos',
-        'photo',
-        creator=lambda event: EventPhoto(event_id=photo),
+        'event',
+        creator=lambda event: EventPhoto(event_id=event),
+    )
+
+    locations = db.association_proxy(
+        'location_photos',
+        'location',
+        creator=lambda location: LocationPhoto(location_id=location),
     )
 
     __mapper_args__ = {
@@ -275,6 +288,32 @@ class EventPhoto(db.Model):
     photo = db.relationship(
         Photo,
         backref=db.backref('event_photos', cascade='all, delete-orphan'),
+    )
+
+
+class LocationPhoto(db.Model):
+    __tablename__ = 'location_photo'
+
+    location_id = db.Column(
+        UUIDType,
+        db.ForeignKey('location.id', ondelete='cascade'),
+        primary_key=True,
+    )
+
+    photo_id = db.Column(
+        UUIDType,
+        db.ForeignKey('photo.id', ondelete='cascade'),
+        primary_key=True,
+    )
+
+    location = db.relationship(
+        Location,
+        backref=db.backref('location_photos', cascade='all, delete-orphan'),
+    )
+
+    photo = db.relationship(
+        Photo,
+        backref=db.backref('location_photos', cascade='all, delete-orphan'),
     )
 
 
