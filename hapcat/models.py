@@ -69,6 +69,8 @@ class RawLocation(UUIDObject):
     id = db.Column(GUID, db.ForeignKey('uuidobject.id'), primary_key=True)
     address = db.Column(db.UnicodeText)
 
+    events = db.relationship('Event', back_populates='location')
+
     __mapper_args__ = {
         'polymorphic_identity': 'rawlocation',
     }
@@ -86,7 +88,7 @@ class Location(RawLocation):
     __tablename__ = 'location'
 
     id = db.Column(GUID, db.ForeignKey('rawlocation.id'), primary_key=True)
-    name = db.Column(db.UnicodeText)
+    name = db.Column(db.UnicodeText, nullable=False)
 
     tags = db.association_proxy(
         'location_tags',
@@ -126,6 +128,71 @@ class LocationTag(db.Model):
     )
 
     tag = db.relationship('Tag')
+
+
+class Event(UUIDObject):
+    __tablename__ = 'event'
+
+    id = db.Column(
+        GUID,
+        db.ForeignKey('uuidobject.id'),
+        primary_key=True
+    )
+
+    name = db.Column(
+        db.UnicodeText,
+        nullable=False
+    )
+
+    location_id = db.Column(
+        GUID,
+        db.ForeignKey('rawlocation.id'),
+        nullable=False
+    )
+
+    location = db.relationship(
+        'RawLocation',
+        back_populates='events'
+    )
+
+    tags = db.association_proxy(
+        'event_tags',
+        'tag',
+        creator=lambda tag: EventTag(tag_id=tag)
+    )
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'event',
+    }
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'location': self.location_id,
+            'tags': [tag.id for tag in self.tags],
+            'type': 'event',
+        }
+
+
+class EventTag(db.Model):
+    __tablename__ = 'event_tag'
+
+    event_id = db.Column(
+        GUID,
+        db.ForeignKey('event.id'),
+        primary_key=True
+    )
+
+    tag_id = db.Column(GUID, db.ForeignKey('tag.id'), primary_key=True)
+
+    event = db.relationship(
+        Event,
+        backref=db.backref('event_tags', cascade='all, delete-orphan')
+    )
+
+    tag = db.relationship('Tag')
+
 
 class User(UUIDObject):
     __tablename__ = 'user'
