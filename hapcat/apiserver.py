@@ -537,7 +537,7 @@ def dump_routes():
 
     return rules
 
-@app.route('/reloadtestdata/')
+@app.route('/debug/reloadtestdata/')
 def load_testdata():
     """Load our test data for debugging.
 
