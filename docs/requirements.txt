@@ -15,6 +15,5 @@ flask-cors
 flask_migrate
 flask_sqlalchemy
 httpstatus35; python_version<"3.5"
-typing; python_version<"3.5"
 sphinxcontrib-httpdomain
 sphinxcontrib-httpexample

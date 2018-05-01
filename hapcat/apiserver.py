@@ -130,10 +130,96 @@ def event(
 
 
 @app.route('/api/v<int:version>/suggestions/')
-def suggestions(version):
+def suggestions(
+        version,
+    ):
     """Send our suggestions.
 
-    FIXME: Don't use test data.
+    :query version: The version of the API currently in use
+
+    :>json tags: The tags, by ID.
+        See the documentation for
+        :http:get:`/api/v(int:version)/tag/(tag)`.
+
+    :>json locations: The locations, by ID.
+        See the documentation for
+        :http:get:`/api/v(int:version)/location/(location)`.
+
+    :>json events: The events, by ID.
+        See the documentation for
+        :http:get:`/api/v(int:version)/event/(event)`.
+
+    :>json order: The order of the suggestions
+
+    :statuscode 200: No error
+
+    **Example request**:
+
+    .. http:example:: curl
+
+        GET /api/v0/suggestions/ HTTP/1.0
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json
+
+        {
+            "tags": {
+                "d927d94f-beb8-4295-ac78-5c00e6dc217c": {
+                    "id": "d927d94f-beb8-4295-ac78-5c00e6dc217c",
+                    "name": "healthy"
+                }
+                "64b9eae5-b220-4a57-92f4-c21dc9b19ec5": {
+                    "id": "64b9eae5-b220-4a57-92f4-c21dc9b19ec5",
+                    "name": "concert"
+                },
+            },
+            "locations": {
+                "f8293fe1-d439-4a4d-ac84-5e8290a28c23": {
+                    "address": "1075 Risman Dr, Kent, OH 44242",
+                    "tags": [
+                        "d927d94f-beb8-4295-ac78-5c00e6dc217c",
+                    ],
+                    "id": "f8293fe1-d439-4a4d-ac84-5e8290a28c23",
+                    "name": "Fresco",
+                    "photos": [
+                        "https://media-cdn.tripadvisor.com/media/photo-s/03/2b/02/a1/fresco-mexican-grill.jpg"
+                    ]
+                }
+                "cbedf9e2-4a1a-44b9-9e3f-6fe870405329": {
+                    "address": "175 E Main St, Kent, OH 44240",
+                    "ephemeral": true,
+                    "id": "cbedf9e2-4a1a-44b9-9e3f-6fe870405329"
+                },
+            },
+            "events": {
+                "b0a28a40-b8ad-4131-8c64-071f3fd45bee": {
+                    "location": "cbedf9e2-4a1a-44b9-9e3f-6fe870405329",
+                    "id": "b0a28a40-b8ad-4131-8c64-071f3fd45bee",
+                    "name": "The Accidentals - Concert at the Kent Stage",
+                    "photos": [
+                        "https://image-ticketfly.imgix.net/00/02/83/80/81-og.jpg"
+                    ],
+                    "tags": [
+                        "64b9eae5-b220-4a57-92f4-c21dc9b19ec5",
+                    ]
+                }
+            },
+            "order": [
+                {
+                    "section": "locations",
+                    "id": "f8293fe1-d439-4a4d-ac84-5e8290a28c23"
+                },
+                {
+                    "section": "events",
+                    "id": "b0a28a40-b8ad-4131-8c64-071f3fd45bee"
+                }
+            ]
+        }
     """
 
     sugs = resource_string('hapcat', 'data/test-suggestions.json')
