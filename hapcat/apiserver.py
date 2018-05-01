@@ -184,9 +184,105 @@ def location(
         version,
         location,
     ):
-    """FIXME: Stub
+    """Get the given location's info.
+
+    :query version: The version of the API currently in use
+
+    :query location: The UUID of the location to get info for
+
+    :statuscode 200: Success
+
+    :statuscode 400: Invalid location ID
+
+    :>json uuid id: The location ID.
+
+    :>json string address: The location address.
+
+    :>json boolean ephemeral: If true, this location is just an address for
+        events.
+
+    :>json string name: The location name if not ephemeral.
+
+    :>json tags: The tag IDs for this location if not ephemeral.
+
+    :>json string type: ``rawlocation`` or ``location``.
+
+    **Example request**:
+
+    .. http:example:: curl
+
+        GET /api/v0/location/a25a1b9a-2f5a-4c76-b19f-eb970d2c7049 HTTP/1.0
+        Accept: application/json
+
+    **Example success, normal location**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json
+
+        {
+            "id": "a25a1b9a-2f5a-4c76-b19f-eb970d2c7049",
+            "address": "1444 E Main St, Kent, OH 44240",
+            "name": "Hungry Howie's Pizza",
+            "ephemeral": false,
+            "tags": [
+                "17b20e68-8cde-4bc3-91a2-f5926a3e2b0f",
+                "0e858a8b-cd18-4617-8a94-2a8bab4945a9",
+                "d6f2989d-d5c0-477d-a8a4-d22e47087ab2"
+            ]
+        }
+
+    **Example success, raw/ephemeral location**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json
+
+        {
+            "id": "cbedf9e2-4a1a-44b9-9e3f-6fe870405329",
+            "address": "175 E Main St, Kent, OH 44240",
+            "ephemeral": true
+        }
+
+    **Example failure**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 400 BAD REQUEST
+        Content-Type: application/json
+
+        {
+            "status": "failure",
+            "message": "Invalid location ID"
+        }
     """
-    return {}
+
+    try:
+        locid = uuid.UUID(location)
+        locobj = db.session.query(RawLocation).filter_by(id=locid).first()
+
+        if locobj:
+            return locobj.serialize()
+
+        else:
+            return (
+                {
+                    'status': 'failure',
+                    'message': 'No such location',
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+
+    except ValueError:
+        return (
+            {
+                'status': 'failure',
+                'message': 'Invalid location ID',
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
 
 @app.route('/api/v<int:version>/event/<event>')
 def event(
