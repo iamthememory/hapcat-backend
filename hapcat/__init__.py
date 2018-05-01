@@ -26,6 +26,8 @@ import flask_migrate
 import flask_sqlalchemy
 import os
 import pkg_resources
+import sys
+import os.path
 
 
 app = flask_api.FlaskAPI(
@@ -71,5 +73,6 @@ flask_cors.CORS(
 import hapcat.apiserver
 import hapcat.models
 
-with app.app_context():
-    flask_migrate.upgrade()
+if os.path.basename(sys.argv[0]) not in ['sphinx-build', 'sphinx-build.exe']:
+    with app.app_context():
+        flask_migrate.upgrade()
