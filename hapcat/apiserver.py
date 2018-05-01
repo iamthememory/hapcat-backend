@@ -258,7 +258,71 @@ def load_testdata():
 @app.route('/api/v<int:version>/registration/', methods=['POST'])
 @app.route('/api/v<int:version>/register/', methods=['POST'])
 def register(version):
-    """Register user.
+    """Register the given user.
+
+    :query version: The version of the API currently in use.
+
+    :<json string username: The requested username.
+
+    :<json string email: The user's email address.
+
+    :<json date_of_birth: The user's date of birth.
+
+    :<json string password: The user's password.
+
+    :>json string status: ``success`` or ``failure``.
+
+    :>json string username: The username.
+
+    :>json string message: An optional message on failure.
+
+    :statuscode 200: Success
+
+    :statuscode 409: The username is already taken.
+
+    **Example request**:
+
+    .. http:example:: curl
+
+        POST /api/v0/registration/ HTTP/1.0
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "username": "user",
+            "password": "password",
+            "email": "user@example.com",
+            "date_of_birth": {
+                "year": 1999,
+                "month": 9,
+                "day": 9
+            }
+        }
+
+    **Example success**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json
+
+        {
+            "status": "success",
+            "username": "user"
+        }
+
+    **Example failure**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 409 CONFLICT
+        Content-Type: application/json
+
+        {
+            "status": "failure",
+            "username": "user",
+            "message": "Username already exists"
+        }
     """
 
     data = flask.request.get_json(
