@@ -78,6 +78,7 @@ class RawLocation(UUIDObject):
             'id': self.id,
             'address': self.address,
             'ephemeral': True,
+            'type': 'rawlocation',
         }
 
 
@@ -103,7 +104,8 @@ class Location(RawLocation):
             'address': self.address,
             'name': self.name,
             'ephemeral': False,
-            'tags': [tag.id for tag in self.tags]
+            'tags': [tag.id for tag in self.tags],
+            'type': 'location',
         }
 
 
