@@ -2,3 +2,19 @@ recommonmark
 sphinx
 sphinx_rtd_theme
 sphinxcontrib-napoleon
+Flask-API
+Flask-ini
+SQLAlchemy
+alembic
+argparse; python_version<"2.7" or (python_version>="3.0" and python_version<"3.2")
+configparser; python_version<"3.2"
+enum34; python_version<"3.4"
+flask
+flask-bcrypt
+flask-cors
+flask_migrate
+flask_sqlalchemy
+httpstatus35; python_version<"3.5"
+typing; python_version<"3.5"
+sphinxcontrib-httpdomain
+sphinxcontrib-httpexample

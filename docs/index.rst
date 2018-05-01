@@ -6,6 +6,7 @@ Welcome to Hapcat Backend's documentation!
 
     readme
     changelog
+    api
     api-reference/index
     contributing
     authors

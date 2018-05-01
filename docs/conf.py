@@ -42,6 +42,9 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     'sphinxcontrib.napoleon',
+    'sphinxcontrib.autohttp.flask',
+    'sphinxcontrib.httpdomain',
+    'sphinxcontrib.httpexample',
 ]
 
 # The defaults for autodoc.
@@ -51,7 +54,6 @@ autodoc_default_flags = [
     'undoc-members',
     'private-members',
     'special-members',
-    'inherited-members',
     'show-inheritance',
 ]
 

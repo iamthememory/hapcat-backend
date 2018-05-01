@@ -1,4 +1,4 @@
-hapcat.apiserver
+hapcat.dbutil
 =====================================================
 
-.. automodule:: hapcat.apiserver
+.. automodule:: hapcat.dbutil
