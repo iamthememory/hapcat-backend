@@ -134,6 +134,7 @@ setup(
         'passlib',
         'sqlalchemy_utils',
         'tox',
+        'zxcvbn',
     ],
     install_requires=[
         'Flask-API',
@@ -154,6 +155,7 @@ setup(
         'httpstatus35; python_version<"3.5"',
         'passlib',
         'sqlalchemy_utils',
+        'zxcvbn',
     ],
     extras_require={
         'postgresql': ['SQLAlchemy[postgresql]'],

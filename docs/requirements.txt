@@ -21,3 +21,4 @@ sphinxcontrib-httpdomain
 sphinxcontrib-httpexample
 sphinxcontrib-napoleon
 sqlalchemy_utils
+zxcvbn
