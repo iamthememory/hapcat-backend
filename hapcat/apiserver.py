@@ -537,6 +537,7 @@ def dump_routes():
 
     return rules
 
+
 @app.route('/debug/reloadtestdata/')
 def load_testdata():
     """Load our test data for debugging.
@@ -547,6 +548,20 @@ def load_testdata():
     hapcat.dbutil.load_test_data()
 
     return {'success': 'true'}
+
+
+@app.route('/debug/dropalldata/')
+def drop_data():
+    """Drop all data.
+
+    A request to this drops all data in the database.
+    """
+
+    # This should cascade to delete everything.
+    db.session.query(UUIDObject).delete()
+    db.session.commit()
+
+    return {'success': 0}
 
 
 @app.route('/api/v<int:version>/registration/', methods=['POST'])
