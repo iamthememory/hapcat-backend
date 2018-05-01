@@ -29,6 +29,8 @@ from sqlalchemy.exc import (
     IntegrityError,
 )
 
+import random
+
 from hapcat.models import *
 
 import hapcat.dbutil
@@ -467,8 +469,55 @@ def suggestions(
         }
     """
 
-    sugs = resource_string('hapcat', 'data/test-suggestions.json')
-    return json.loads(sugs.decode())
+    # Retrieve a few events and locations.
+
+    maxlocs = 5
+    maxevents = 5
+
+    tags = set()
+
+    # Retrieve some locations.
+
+    locs = db.session.query(Location).limit(maxlocs).all()
+    slocs = {}
+
+    for loc in locs:
+        tags.update(loc.tags)
+        slocs[str(loc.id)] = loc.serialize()
+
+    # Retrieve some events.
+
+    events = db.session.query(Event).limit(maxevents).all()
+    sevents = {}
+
+    for event in events:
+        tags.update(event.tags)
+        sevents[str(event.id)] = event.serialize()
+
+    # Retrieve our tags.
+
+    stags = {str(tag.id): tag.serialize() for tag in tags}
+
+    # Generate our order.
+
+    raworder = list(slocs.values()) + list(sevents.values())
+    random.shuffle(raworder)
+
+    order = [
+        {
+            'section': 'location' if x['type'] == 'location' else 'events',
+            'id': x['id'],
+        }
+        for x in raworder
+    ]
+
+    return {
+        'locations': slocs,
+        'events': sevents,
+        'tags': stags,
+        'order': order,
+    }
+
 
 @app.route('/')
 def dump_routes():
