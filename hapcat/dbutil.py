@@ -75,6 +75,18 @@ def load_test_data():
                         address=location['address']
                     )
 
+                    newphotos = [
+                        Photo(
+                            id=uuid.uuid4(),
+                            photourl=photo,
+                        )
+                        for photo in location['photos']
+                    ]
+
+                    session.add_all(newphotos)
+
+                    newloc.photos.extend([p.id for p in newphotos])
+
                     newloc.tags.extend(location['tags'])
 
                 session.add(newloc)
