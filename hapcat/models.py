@@ -69,8 +69,6 @@ class RawLocation(UUIDObject):
     id = db.Column(GUID, db.ForeignKey('uuidobject.id'), primary_key=True)
     address = db.Column(db.UnicodeText)
 
-    events = db.relationship('Event', back_populates='location')
-
     __mapper_args__ = {
         'polymorphic_identity': 'rawlocation',
     }
@@ -144,15 +142,15 @@ class Event(UUIDObject):
         nullable=False
     )
 
-    location_id = db.Column(
+    rawlocation_id = db.Column(
         GUID,
         db.ForeignKey('rawlocation.id'),
         nullable=False
     )
 
-    location = db.relationship(
+    rawlocation = db.relationship(
         'RawLocation',
-        back_populates='events'
+        foreign_keys=[rawlocation_id],
     )
 
     tags = db.association_proxy(
@@ -169,7 +167,7 @@ class Event(UUIDObject):
         return {
             'id': self.id,
             'name': self.name,
-            'location': self.location_id,
+            'location': self.rawlocation_id,
             'tags': [tag.id for tag in self.tags],
             'type': 'event',
         }
