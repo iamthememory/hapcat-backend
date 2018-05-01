@@ -55,6 +55,13 @@ class Tag(UUIDObject):
         'polymorphic_identity': 'tag'
     }
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'type': 'tag',
+        }
+
 
 class Location(UUIDObject):
     __tablename__ = 'location'
