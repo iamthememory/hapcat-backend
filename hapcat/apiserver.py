@@ -38,8 +38,39 @@ from flask_api.renderers import JSONRenderer, HTMLRenderer
 from flask_api import status
 
 @app.route('/api/v<int:version>/serverinfo/')
-def serverinfo(version):
-    """Send the server info.
+def serverinfo(
+        version,
+    ):
+    """Get the server info.
+
+    :query version: The version of the API currently in use
+
+    :>json string server_version: The version of the backend
+
+    :>json list(int) api_versions: The supported API versions
+
+    :statuscode 200: No error
+
+    **Example request**:
+
+    .. http:example:: curl
+
+        GET /api/v0/serverinfo/ HTTP/1.0
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json
+
+        {
+            "server_version": "0.0.2.dev10",
+            "api_versions": [
+                0
+            ]
+        }
     """
 
     return {
