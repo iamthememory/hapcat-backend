@@ -81,6 +81,22 @@ def serverinfo(
 @app.route('/api/serverinfo/')
 def serverinfo_redirect():
     """Redirect to the latest API version serverinfo.
+
+    :statuscode 302: Redirect
+
+    **Example request**:
+
+    .. http:example:: curl
+
+        GET /api/serverinfo/ HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 302 FOUND
+        Location: http://localhost:8080/api/v0/serverinfo/
+
     """
 
     return flask.redirect('/api/v0/serverinfo/')
