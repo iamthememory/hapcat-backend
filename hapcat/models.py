@@ -51,7 +51,12 @@ class UUIDObject(db.Model):
 class Tag(UUIDObject):
     __tablename__ = 'tag'
 
-    id = db.Column(UUIDType, db.ForeignKey('uuidobject.id'), primary_key=True)
+    id = db.Column(
+        UUIDType,
+        db.ForeignKey('uuidobject.id', ondelete='cascade'),
+        primary_key=True
+    )
+
     name = db.Column(db.UnicodeText, nullable=False)
 
     __mapper_args__ = {
@@ -69,7 +74,12 @@ class Tag(UUIDObject):
 class RawLocation(UUIDObject):
     __tablename__ = 'rawlocation'
 
-    id = db.Column(UUIDType, db.ForeignKey('uuidobject.id'), primary_key=True)
+    id = db.Column(
+        UUIDType,
+        db.ForeignKey('uuidobject.id', ondelete='cascade'),
+        primary_key=True
+    )
+
     address = db.Column(db.UnicodeText)
 
     __mapper_args__ = {
@@ -88,7 +98,12 @@ class RawLocation(UUIDObject):
 class Location(RawLocation):
     __tablename__ = 'location'
 
-    id = db.Column(UUIDType, db.ForeignKey('rawlocation.id'), primary_key=True)
+    id = db.Column(
+        UUIDType,
+        db.ForeignKey('rawlocation.id', ondelete='cascade'),
+        primary_key=True
+    )
+
     name = db.Column(db.UnicodeText, nullable=False)
 
     tags = db.association_proxy(
@@ -117,11 +132,15 @@ class LocationTag(db.Model):
 
     location_id = db.Column(
         UUIDType,
-        db.ForeignKey('location.id'),
+        db.ForeignKey('location.id', ondelete='cascade'),
         primary_key=True
     )
 
-    tag_id = db.Column(UUIDType, db.ForeignKey('tag.id'), primary_key=True)
+    tag_id = db.Column(
+        UUIDType,
+        db.ForeignKey('tag.id', ondelete='cascade'),
+        primary_key=True
+    )
 
     location = db.relationship(
         Location,
@@ -136,7 +155,7 @@ class Event(UUIDObject):
 
     id = db.Column(
         UUIDType,
-        db.ForeignKey('uuidobject.id'),
+        db.ForeignKey('uuidobject.id', ondelete='cascade'),
         primary_key=True
     )
 
@@ -147,7 +166,7 @@ class Event(UUIDObject):
 
     rawlocation_id = db.Column(
         UUIDType,
-        db.ForeignKey('rawlocation.id'),
+        db.ForeignKey('rawlocation.id', ondelete='cascade'),
         nullable=False
     )
 
@@ -181,11 +200,15 @@ class EventTag(db.Model):
 
     event_id = db.Column(
         UUIDType,
-        db.ForeignKey('event.id'),
+        db.ForeignKey('event.id', ondelete='cascade'),
         primary_key=True
     )
 
-    tag_id = db.Column(UUIDType, db.ForeignKey('tag.id'), primary_key=True)
+    tag_id = db.Column(
+        UUIDType,
+        db.ForeignKey('tag.id', ondelete='cascade'),
+        primary_key=True
+    )
 
     event = db.relationship(
         Event,
@@ -195,8 +218,8 @@ class EventTag(db.Model):
     tag = db.relationship('Tag')
 
 
-class Photo(UUIDObject):
-    __tablename__ = 'photo'
+#class Photo(UUIDObject):
+#    __tablename__ = 'photo'
 
 
 class User(UUIDObject):
@@ -209,7 +232,11 @@ class User(UUIDObject):
         self.date_of_birth = date_of_birth
         self.password = password
 
-    id = db.Column(UUIDType, db.ForeignKey('uuidobject.id'), primary_key=True)
+    id = db.Column(
+        UUIDType,
+        db.ForeignKey('uuidobject.id', ondelete='cascade'),
+        primary_key=True
+    )
 
     username = db.Column(
         db.UnicodeText,
