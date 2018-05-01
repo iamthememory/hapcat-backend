@@ -289,9 +289,89 @@ def event(
         version,
         event,
     ):
-    """FIXME: Stub
+    """Get the given event's info.
+
+    :query version: The version of the API currently in use
+
+    :query event: The UUID of the event to get info for
+
+    :statuscode 200: Success
+
+    :statuscode 400: Invalid event ID
+
+    :>json UUID id: The event ID
+
+    :>json string name: The tag name
+
+    :>json UUID location: The raw location this event takes place at
+
+    :>json string type: ``event``
+
+    :>json tags: The tag IDs for this event
+
+    **Example request**:
+
+    .. http:example:: curl
+
+        GET /api/v0/event/b0a28a40-b8ad-4131-8c64-071f3fd45bee HTTP/1.0
+        Accept: application/json
+
+    **Example success**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json
+
+        {
+            "id": "b0a28a40-b8ad-4131-8c64-071f3fd45bee",
+            "name": "The Accidentals - Concert at the Kent Stage",
+            "location": "cbedf9e2-4a1a-44b9-9e3f-6fe870405329",
+            "tags": [
+                "64b9eae5-b220-4a57-92f4-c21dc9b19ec5",
+                "71f450ef-b344-45f3-9b60-0dbda7fce2f0",
+                "f8ddde82-331e-43c2-a2fd-985c5eb8fe52"
+            ],
+            "type": "event"
+        }
+
+    **Example failure**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 400 BAD REQUEST
+        Content-Type: application/json
+
+        {
+            "status": "failure",
+            "message": "Invalid event ID"
+        }
     """
-    return {}
+
+    try:
+        eventid = uuid.UUID(event)
+        eventobj = db.session.query(Event).filter_by(id=eventid).first()
+
+        if eventobj:
+            return eventobj.serialize()
+
+        else:
+            return (
+                {
+                    'status': 'failure',
+                    'message': 'No such event',
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+
+    except ValueError:
+        return (
+            {
+                'status': 'failure',
+                'message': 'Invalid event ID',
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
 
 
 @app.route('/api/v<int:version>/suggestions/')
