@@ -136,6 +136,7 @@ def load_testdata():
 
 
 @app.route('/api/v<int:version>/registration/', methods=['POST'])
+@app.route('/api/v<int:version>/register/', methods=['POST'])
 def register(version):
     """Register user.
     """
