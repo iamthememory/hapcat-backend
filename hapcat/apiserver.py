@@ -240,7 +240,9 @@ def dump_routes():
 
 @app.route('/reloadtestdata/')
 def load_testdata():
-    """Load our test data.
+    """Load our test data for debugging.
+
+    A request to this reloads the test data into the database.
     """
 
     hapcat.dbutil.load_test_data()
