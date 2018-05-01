@@ -27,8 +27,14 @@ import flask_sqlalchemy
 import os
 import os.path
 import pkg_resources
-import secrets
 import sys
+
+try:
+    import secrets
+except ImportError:
+    # Import the small module hackily copied from the Python 3.6 library, since
+    # no one seems to have backported it on PyPI yet.
+    import hapcat.compat.secrets as secrets
 
 
 app = flask_api.FlaskAPI(
