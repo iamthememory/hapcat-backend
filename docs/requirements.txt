@@ -1,4 +1,5 @@
 Flask-API
+Flask-JWT
 Flask-ini
 SQLAlchemy
 alembic

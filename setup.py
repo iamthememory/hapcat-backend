@@ -116,6 +116,7 @@ setup(
     zip_safe=False,
     tests_require=[
         'Flask-API',
+        'Flask-JWT',
         'Flask-ini',
         'SQLAlchemy',
         'alembic',
@@ -138,6 +139,7 @@ setup(
     ],
     install_requires=[
         'Flask-API',
+        'Flask-JWT',
         'Flask-ini',
         'SQLAlchemy',
         'alembic',

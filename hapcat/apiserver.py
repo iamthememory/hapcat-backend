@@ -13,6 +13,7 @@ import hapcat
 from hapcat import (
     app,
     db,
+    jwt,
 )
 
 import datetime
@@ -20,6 +21,11 @@ import datetime
 from flask import (
     json,
     request,
+)
+
+from flask_jwt import (
+    current_identity,
+    jwt_required,
 )
 
 import uuid
@@ -714,3 +720,95 @@ def register(version):
             'username': newuser.username,
             'message': 'Username already exists',
         }, status.HTTP_409_CONFLICT)
+
+
+@app.route('/api/v<int:version>/auth/', methods=['POST'])
+@app.route('/api/v<int:version>/login/', methods=['POST'])
+def login(version):
+    """Login.
+
+    :query version: The version of the API currently in use.
+
+    :<json string username: The login username.
+
+    :<json string password: The user's password.
+
+    :>json boolean success: ``True`` or ``False``.
+
+    :>json string message: A message if success is ``False``.
+
+    :>json string access_token: The access token for future requests.
+
+    :statuscode 200: Success
+
+    :statuscode 401: Invalid credentials.
+
+    **Example request**:
+
+    .. http:example:: curl
+
+        POST /api/v0/login/ HTTP/1.0
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "username": "user",
+            "password": "pass"
+        }
+
+    **Example success**:
+
+    Note that the access token is truncated here.
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json
+
+        {
+            "success": true,
+            "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJ...8QWJFcYlI"
+        }
+
+    **Example failure**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 401 UNAUTHORIZED
+        Content-Type: application/json
+
+        {
+            "success": false,
+            "message": "Invalid credentials"
+        }
+    """
+    data = request.get_json(force=True)
+
+    username = data.get('username', None)
+    password = data.get('password', None)
+
+    if not (username and password):
+        return (
+            {
+                'success': False,
+                'message': 'Invalid request JSON',
+            },
+            status.HTTP_401_UNAUTHORIZED,
+        )
+
+    identity = jwt.authentication_callback(username, password)
+
+    if identity:
+        access_token = jwt.jwt_encode_callback(identity)
+        return {
+            'success': True,
+            'access_token': access_token,
+        }
+    else:
+        return (
+            {
+                'success': False,
+                'message': 'Invalid credentials',
+            },
+            status.HTTP_401_UNAUTHORIZED,
+        )
