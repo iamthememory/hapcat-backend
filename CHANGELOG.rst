@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.0.3
+-------------
+
+Fixes:
+
+- Change ``location`` and ``event`` in ``order`` to their proper plurals
+
 Version 0.0.2
 -------------
 

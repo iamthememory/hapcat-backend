@@ -8,7 +8,7 @@ from __future__ import (
     division,
 )
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 
 __description__ = """\
 The backend daemon for the hapcat project.
