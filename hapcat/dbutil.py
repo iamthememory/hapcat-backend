@@ -84,4 +84,24 @@ def load_test_data():
                 location.get('id', '<none>'),
             )
 
+    # Load events.
+    for event in testdata['events'].values():
+        try:
+            with session.begin_nested():
+                newevent = Event(
+                    id=event['id'],
+                    rawlocation_id=event['location'],
+                    name=event['name'],
+                )
+
+                newevent.tags.extend(event['tags'])
+
+                session.add(newevent)
+        except IntegrityError:
+            app.logger.debug(
+                'Skipping duplicate event id=%s, name=%s',
+                event['id'],
+                event.get('id', '<none>'),
+            )
+
     session.commit()
