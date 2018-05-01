@@ -63,12 +63,29 @@ class Tag(UUIDObject):
         }
 
 
-class Location(UUIDObject):
-    __tablename__ = 'location'
+class RawLocation(UUIDObject):
+    __tablename__ = 'rawlocation'
 
     id = db.Column(GUID, db.ForeignKey('uuidobject.id'), primary_key=True)
-    name = db.Column(db.UnicodeText)
     address = db.Column(db.UnicodeText)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'rawlocation',
+    }
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'address': self.address,
+            'ephemeral': True,
+        }
+
+
+class Location(RawLocation):
+    __tablename__ = 'location'
+
+    id = db.Column(GUID, db.ForeignKey('rawlocation.id'), primary_key=True)
+    name = db.Column(db.UnicodeText)
 
     tags = db.association_proxy(
         'location_tags',
@@ -77,8 +94,17 @@ class Location(UUIDObject):
     )
 
     __mapper_args__ = {
-        'polymorphic_identity': 'location'
+        'polymorphic_identity': 'location',
     }
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'address': self.address,
+            'name': self.name,
+            'ephemeral': False,
+            'tags': [tag.id for tag in self.tags]
+        }
 
 
 class LocationTag(db.Model):

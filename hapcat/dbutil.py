@@ -8,10 +8,7 @@ from __future__ import absolute_import, with_statement, print_function
 
 import hapcat.models
 
-from hapcat.models import (
-    Tag,
-    Location,
-)
+from hapcat.models import *
 
 import sqlalchemy
 import sqlalchemy.orm
@@ -62,13 +59,22 @@ def load_test_data():
     for location in testdata['locations'].values():
         try:
             with session.begin_nested():
-                newloc = Location(
-                    id=location['id'],
-                    name=location.get('name', None),
-                    address=location.get('address', None)
-                )
+                newloc = None
 
-                newloc.tags.extend(location.get('tags', []))
+                if location.get('ephemeral', False):
+                    newloc = RawLocation(
+                        id=location['id'],
+                        address=location['address'],
+                    )
+
+                else:
+                    newloc = Location(
+                        id=location['id'],
+                        name=location['name'],
+                        address=location['address']
+                    )
+
+                    newloc.tags.extend(location['tags'])
 
                 session.add(newloc)
         except IntegrityError:
