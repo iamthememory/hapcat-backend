@@ -505,7 +505,7 @@ def suggestions(
 
     order = [
         {
-            'section': 'location' if x['type'] == 'location' else 'events',
+            'section': 'locations' if x['type'] == 'location' else 'events',
             'id': x['id'],
         }
         for x in raworder
