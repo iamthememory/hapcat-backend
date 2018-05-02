@@ -240,6 +240,7 @@ class Photo(UUIDObject):
         URLType,
         nullable=False,
         unique=True,
+        index=True,
     )
 
     votables = db.association_proxy(
