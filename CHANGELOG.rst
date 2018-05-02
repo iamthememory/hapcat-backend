@@ -7,6 +7,7 @@ Version 0.0.4.dev1
 Features:
 
 - Add a password strength check
+- Add JWT-based authentication
 
 Version 0.0.4.dev0
 ------------------
