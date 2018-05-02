@@ -103,7 +103,7 @@ long_desc = '%s\n\n%s' % (readme, changes)
 
 setup(
     name='hapcat',
-    version='0.0.4.dev1',
+    version='0.0.4.dev2',
     description='The backend code for the Hapcat Project',
     long_description=long_desc,
     author=authors,
