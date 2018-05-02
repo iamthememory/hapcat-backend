@@ -570,6 +570,63 @@ def drop_data():
     return {'success': 0}
 
 
+@app.route('/debug/protectedtest/')
+@jwt_required()
+def protect():
+    """Test authorization.
+
+    :reqheader Authorization: The JWT authorization token for the user from
+        :http:get:`/api/v(int:version)/auth/`.
+
+    :>json string id: The user's UUID.
+
+    :>json string username: The user's username.
+
+    :statuscode 200: Success.
+
+    :statuscode 401: Invalid authorization token.
+
+    **Example request**:
+
+    .. http:example:: curl
+
+        GET /debug/protectedtest/ HTTP/1.0
+        Accept: application/json
+        Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbG...0UHGO-U0R4PTQ
+
+    **Example success**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json
+
+        {
+            "id": "4cfab2e4-b38f-435f-b9b1-aa8eb8172dcf",
+            "username": "user"
+        }
+
+    **Example failure**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 401 UNAUTHORIZED
+        Content-Type: application/json
+        WWW-Authenticate: JWT realm="Login Required"
+
+        {
+            "description": "Request does not contain an access token",
+            "error": "Authorization Required",
+            "status_code": 401
+        }
+    """
+
+    return {
+        'id': current_identity.id,
+        'username': current_identity.username,
+    }
+
+
 @app.route('/api/v<int:version>/registration/', methods=['POST'])
 @app.route('/api/v<int:version>/register/', methods=['POST'])
 def register(version):
