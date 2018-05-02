@@ -381,6 +381,198 @@ def event(
             status.HTTP_400_BAD_REQUEST
         )
 
+@app.route('/api/v<int:version>/addevent/', methods=['POST'])
+@app.route('/api/v<int:version>/addlocation/', methods=['POST'])
+@jwt_required()
+def addevent(
+        version,
+    ):
+    """Add an event or location.
+
+    :query version: The version of the API currently in use.
+
+    :<json string type: ``event`` or ``location``.
+
+    :<json string name: The name of the event or location.
+
+    :<json string address: The address.
+
+    :<json list tags: A list of tag UUIDs.
+
+    :<json photos tags: A list of photo URLs.
+
+    :>json boolean success: ``True`` or ``False``
+
+    :>json string message: A message if failed.
+
+    :>json votable: The new event or location.
+        See the documentation for
+        :http:get:`/api/v(int:version)/location/(location)`
+        and
+        :http:get:`/api/v(int:version)/event/(event)`
+        for details on the format.
+
+    :statuscode 200: No error
+
+    :statuscode 400: Invalid request.
+
+    **Example request**:
+
+    .. http:example:: curl
+
+        POST /api/v0/addevent/ HTTP/1.0
+        Accept: application/json
+        Content-Type: application/json
+
+        {
+            "type": "event",
+            "name": "Event name",
+            "address": "2345 Tourist Road, Bla OH",
+            "tags": [
+                "d927d94f-beb8-4295-ac78-5c00e6dc217c",
+                "bd6b3a7e-d967-4c96-beb2-ecb10dfe72fb"
+            ],
+            "photos": [
+                "http://example.com/image.png"
+            ]
+        }
+
+    **Example success**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json
+
+        {
+            "success": true,
+            "votable": {
+                "id": "f99d4246-f354-49ca-9a4b-d568861ac3c9",
+                "name": "Event name",
+                "location": "ea72c24b-afdd-448e-b822-2c6646ca90fc",
+                "tags": [
+                    "d927d94f-beb8-4295-ac78-5c00e6dc217c",
+                    "bd6b3a7e-d967-4c96-beb2-ecb10dfe72fb"
+                ],
+                "type": "event",
+                "photos": [
+                    "http://example.com/image.png"
+                ]
+            }
+        }
+
+    **Example failure**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 400 BAD REQUEST
+        Content-Type: application/json
+
+        {
+            "success": false,
+            "message": "Invalid tag"
+        }
+    """
+
+    data = request.get_json(force=True)
+
+    dbobjs = []
+
+    types = {
+        'event': Event,
+        'location': Location,
+    }
+
+    # Validate data.
+
+    try:
+        if data['type'] != 'event' and data['type'] != 'location':
+            raise KeyError('Invalid type')
+
+        data['name']
+        data['address']
+    except KeyError:
+        return (
+            {
+                'success': False,
+                'message': 'Invalid request JSON',
+            },
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Create or get the address.
+    addr = db.session.query(RawLocation).filter(
+        RawLocation.address == data['address']).scalar()
+
+    if addr is None:
+        addr = RawLocation(
+            id=uuid.uuid4(),
+            address=data['address'],
+        )
+
+        dbobjs.append(addr)
+
+    tags = []
+
+    try:
+        tagids = [uuid.UUID(tag) for tag in data.get('tags', [])]
+        tags = [
+            db.session.query(Tag).filter(Tag.id == tag).scalar()
+            for tag in tagids
+        ]
+    except ValueError:
+        return (
+            {
+                'success': False,
+                'message': 'Invalid tag',
+            },
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    photos = []
+
+    try:
+        for url in data.get('photos', []):
+            photo = db.session.query(Photo).filter(
+                Photo.photourl == url).scalar()
+
+            if photo is None:
+                photo = Photo(
+                    id=uuid.uuid4(),
+                    photourl=url,
+                )
+
+                dbobjs.append(photo)
+
+            photos.append(photo)
+    except ValueError:
+        return (
+            {
+                'success': False,
+                'message': 'Invalid photo URL',
+            },
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    votable = types[data['type']](
+        id=uuid.uuid4(),
+        rawlocation_id=addr.id,
+        name=data['name'],
+    )
+
+    votable.tags.extend(tag.id for tag in tags)
+    votable.photos.extend(photo.id for photo in photos)
+
+    dbobjs.append(votable)
+
+    db.session.add_all(dbobjs)
+    db.session.commit()
+
+    return {
+        'success': True,
+        'votable': votable.serialize(),
+    }
+
 
 @app.route('/api/v<int:version>/vote/<votable>/')
 @jwt_required()
