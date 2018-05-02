@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.0.4.dev2
+------------------
+
+Fixes:
+
+- Ensure event ephemeral locations are included in suggestions
+
 Version 0.0.4.dev1
 ------------------
 

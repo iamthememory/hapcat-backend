@@ -495,10 +495,12 @@ def suggestions(
 
     events = db.session.query(Event).limit(maxevents).all()
     sevents = {}
+    eventlocs = {}
 
     for event in events:
         tags.update(event.tags)
         sevents[str(event.id)] = event.serialize()
+        eventlocs[str(event.rawlocation.id)] = event.rawlocation.serialize()
 
     # Retrieve our tags.
 
@@ -516,6 +518,9 @@ def suggestions(
         }
         for x in raworder
     ]
+
+    # Add in our raw locations
+    slocs.update(eventlocs)
 
     return {
         'locations': slocs,
