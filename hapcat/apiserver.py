@@ -382,6 +382,150 @@ def event(
         )
 
 
+@app.route('/api/v<int:version>/vote/<votable>/')
+@jwt_required()
+def vote(
+        version,
+        votable,
+    ):
+    """Vote for an event or location.
+
+    :reqheader Authorization: The JWT authorization token for the user from
+        :http:post:`/api/v(int:version)/auth/`.
+
+    :query version: The version of the API currently in use.
+
+    :query votable: The UUID of the event or location to vote for.
+
+    :>json boolean success: ``True`` or ``False``.
+
+    :>json string message: The failure reason if ``False``.
+
+    :>json string votable: The UUID of the event or location voted for.
+
+    :>json string user_id: The UUID of the user.
+
+    :>json string username: The username of the user.
+
+    :>json int numvotes: The total number of votes of this user for this event
+        or location.
+
+    :statuscode 200: Success.
+
+    :statuscode 400: Invalid votable ID or user.
+
+    :statuscode 401: Invalid authorization token.
+
+    **Example request**:
+
+    .. http:example:: curl
+
+        GET /api/v0/vote/c43e3c6a-64ad-4cc8-94cd-65d1c8e4ada6/ HTTP/1.0
+        Accept: application/json
+        Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbG...0UHGO-U0R4PTQ
+
+    **Example success**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json
+
+        {
+            "success": true,
+            "votable": "c43e3c6a-64ad-4cc8-94cd-65d1c8e4ada6",
+            "user_id": "e7d45044-d500-451a-825f-cbff616030f2",
+            "username": "user",
+            "numvotes": 11
+        }
+
+    **Example failure**:
+
+    .. sourcecode:: http
+
+        HTTP/1.0 400 BAD REQUEST
+        Content-Type: application/json
+
+        {
+            "success": false,
+            "message": "No such votable",
+            "votable": "c43e3c6a-64ad-4cc8-94cd-65d1c8e4adaf",
+            "user_id": "e7d45044-d500-451a-825f-cbff616030f2",
+            "username": "user"
+        }
+    """
+
+    user = db.session.query(User).filter(
+        User.id == current_identity.id
+    ).scalar()
+
+    if user is None:
+        return (
+            {
+                'success': False,
+                'message': 'No such user',
+                'votable': votable,
+                'user_id': current_identity.id,
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        uuid.UUID(votable)
+    except ValueError:
+        return (
+            {
+                'success': False,
+                'message': 'Invalid UUID',
+                'votable': votable,
+                'user_id': user.id,
+                'username': user.username,
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    votableobj = db.session.query(Votable).filter(
+        Votable.id == votable
+    ).scalar()
+
+    if votableobj is None:
+        return (
+            {
+                'success': False,
+                'message': 'No such votable',
+                'votable': votable,
+                'user_id': user.id,
+                'username': user.username,
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    vote = db.session.query(Vote).filter(
+        Vote.votable_id == votable and
+        Vote.user_id == current_identity.id
+    ).scalar()
+
+    if vote is None:
+        vote = Vote(
+            votable_id=votable,
+            user_id=current_identity.id,
+            numvotes=0,
+        )
+
+    vote.numvotes += 1
+
+    db.session.add(vote)
+    db.session.commit()
+
+    return {
+        'success': True,
+        'votable': votable,
+        'user_id': user.id,
+        'username': user.username,
+        'numvotes': vote.numvotes,
+    }
+
+
 @app.route('/api/v<int:version>/suggestions/')
 def suggestions(
         version,
