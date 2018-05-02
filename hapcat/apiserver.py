@@ -576,7 +576,7 @@ def protect():
     """Test authorization.
 
     :reqheader Authorization: The JWT authorization token for the user from
-        :http:get:`/api/v(int:version)/auth/`.
+        :http:post:`/api/v(int:version)/auth/`.
 
     :>json string id: The user's UUID.
 
