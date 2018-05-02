@@ -83,7 +83,12 @@ class RawLocation(UUIDObject):
         primary_key=True
     )
 
-    address = db.Column(db.UnicodeText)
+    address = db.Column(
+        db.UnicodeText,
+        nullable=False,
+        unique=True,
+        index=True,
+    )
 
     __mapper_args__ = {
         'polymorphic_identity': 'rawlocation',
@@ -98,70 +103,8 @@ class RawLocation(UUIDObject):
         }
 
 
-class Location(RawLocation):
-    __tablename__ = 'location'
-
-    id = db.Column(
-        UUIDType,
-        db.ForeignKey('rawlocation.id', ondelete='cascade'),
-        primary_key=True
-    )
-
-    name = db.Column(db.UnicodeText, nullable=False)
-
-    tags = db.association_proxy(
-        'location_tags',
-        'tag',
-        creator=lambda tag: LocationTag(tag_id=tag)
-    )
-
-    photos = db.association_proxy(
-        'location_photos',
-        'photo',
-        creator=lambda photo: LocationPhoto(photo_id=photo)
-    )
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'location',
-    }
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'address': self.address,
-            'name': self.name,
-            'ephemeral': False,
-            'tags': [tag.id for tag in self.tags],
-            'type': 'location',
-            'photos': [str(photo.photourl) for photo in self.photos],
-        }
-
-
-class LocationTag(db.Model):
-    __tablename__ = 'location_tag'
-
-    location_id = db.Column(
-        UUIDType,
-        db.ForeignKey('location.id', ondelete='cascade'),
-        primary_key=True
-    )
-
-    tag_id = db.Column(
-        UUIDType,
-        db.ForeignKey('tag.id', ondelete='cascade'),
-        primary_key=True
-    )
-
-    location = db.relationship(
-        Location,
-        backref=db.backref('location_tags', cascade='all, delete-orphan')
-    )
-
-    tag = db.relationship('Tag')
-
-
-class Event(UUIDObject):
-    __tablename__ = 'event'
+class Votable(UUIDObject):
+    __tablename__ = 'votable'
 
     id = db.Column(
         UUIDType,
@@ -174,27 +117,99 @@ class Event(UUIDObject):
         nullable=False
     )
 
+    tags = db.association_proxy(
+        'votable_tags',
+        'tag',
+        creator=lambda tag: VotableTag(tag_id=tag)
+    )
+
+    photos = db.association_proxy(
+        'votable_photos',
+        'photo',
+        creator=lambda photo: VotablePhoto(photo_id=photo)
+    )
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'votable',
+    }
+
+
+class Location(Votable):
+    __tablename__ = 'location'
+
+    id = db.Column(
+        UUIDType,
+        db.ForeignKey('votable.id', ondelete='cascade'),
+        primary_key=True
+    )
+
     rawlocation_id = db.Column(
         UUIDType,
         db.ForeignKey('rawlocation.id', ondelete='cascade'),
-        nullable=False
+        nullable=False,
+    )
+
+    rawlocation = db.relationship(
+        RawLocation,
+    )
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'location',
+    }
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'address': self.rawlocation.address,
+            'name': self.name,
+            'ephemeral': False,
+            'tags': [tag.id for tag in self.tags],
+            'type': 'location',
+            'photos': [str(photo.photourl) for photo in self.photos],
+        }
+
+
+class VotableTag(db.Model):
+    __tablename__ = 'votable_tag'
+
+    votable_id = db.Column(
+        UUIDType,
+        db.ForeignKey('votable.id', ondelete='cascade'),
+        primary_key=True,
+    )
+
+    tag_id = db.Column(
+        UUIDType,
+        db.ForeignKey('tag.id', ondelete='cascade'),
+        primary_key=True,
+    )
+
+    votable = db.relationship(
+        Votable,
+        backref=db.backref('votable_tags', cascade='all, delete-orphan'),
+    )
+
+    tag = db.relationship(Tag)
+
+
+class Event(Votable):
+    __tablename__ = 'event'
+
+    id = db.Column(
+        UUIDType,
+        db.ForeignKey('votable.id', ondelete='cascade'),
+        primary_key=True,
+    )
+
+    rawlocation_id = db.Column(
+        UUIDType,
+        db.ForeignKey('rawlocation.id', ondelete='cascade'),
+        nullable=False,
     )
 
     rawlocation = db.relationship(
         'RawLocation',
         foreign_keys=[rawlocation_id],
-    )
-
-    tags = db.association_proxy(
-        'event_tags',
-        'tag',
-        creator=lambda tag: EventTag(tag_id=tag)
-    )
-
-    photos = db.association_proxy(
-        'event_photos',
-        'photo',
-        creator=lambda photo: EventPhoto(photo_id=photo)
     )
 
     __mapper_args__ = {
@@ -212,29 +227,6 @@ class Event(UUIDObject):
         }
 
 
-class EventTag(db.Model):
-    __tablename__ = 'event_tag'
-
-    event_id = db.Column(
-        UUIDType,
-        db.ForeignKey('event.id', ondelete='cascade'),
-        primary_key=True
-    )
-
-    tag_id = db.Column(
-        UUIDType,
-        db.ForeignKey('tag.id', ondelete='cascade'),
-        primary_key=True
-    )
-
-    event = db.relationship(
-        Event,
-        backref=db.backref('event_tags', cascade='all, delete-orphan')
-    )
-
-    tag = db.relationship('Tag')
-
-
 class Photo(UUIDObject):
     __tablename__ = 'photo'
 
@@ -250,16 +242,10 @@ class Photo(UUIDObject):
         unique=True,
     )
 
-    events = db.association_proxy(
-        'event_photos',
-        'event',
-        creator=lambda event: EventPhoto(event_id=event),
-    )
-
-    locations = db.association_proxy(
-        'location_photos',
-        'location',
-        creator=lambda location: LocationPhoto(location_id=location),
+    votables = db.association_proxy(
+        'votable_photos',
+        'votable',
+        creator=lambda votable: VotablePhoto(votable_id=votable),
     )
 
     __mapper_args__ = {
@@ -267,13 +253,18 @@ class Photo(UUIDObject):
     }
 
 
-class EventPhoto(db.Model):
-    __tablename__ = 'event_photo'
+class VotablePhoto(db.Model):
+    __tablename__ = 'votable_photo'
 
-    event_id = db.Column(
+    votable_id = db.Column(
         UUIDType,
-        db.ForeignKey('event.id', ondelete='cascade'),
+        db.ForeignKey('votable.id', ondelete='cascade'),
         primary_key=True,
+    )
+
+    votable = db.relationship(
+        Votable,
+        backref=db.backref('votable_photos', cascade='all, delete-orphan'),
     )
 
     photo_id = db.Column(
@@ -282,40 +273,9 @@ class EventPhoto(db.Model):
         primary_key=True,
     )
 
-    event = db.relationship(
-        Event,
-        backref=db.backref('event_photos', cascade='all, delete-orphan'),
-    )
-
     photo = db.relationship(
         Photo,
-        backref=db.backref('event_photos', cascade='all, delete-orphan'),
-    )
-
-
-class LocationPhoto(db.Model):
-    __tablename__ = 'location_photo'
-
-    location_id = db.Column(
-        UUIDType,
-        db.ForeignKey('location.id', ondelete='cascade'),
-        primary_key=True,
-    )
-
-    photo_id = db.Column(
-        UUIDType,
-        db.ForeignKey('photo.id', ondelete='cascade'),
-        primary_key=True,
-    )
-
-    location = db.relationship(
-        Location,
-        backref=db.backref('location_photos', cascade='all, delete-orphan'),
-    )
-
-    photo = db.relationship(
-        Photo,
-        backref=db.backref('location_photos', cascade='all, delete-orphan'),
+        backref=db.backref('votable_photos', cascade='all, delete-orphan'),
     )
 
 

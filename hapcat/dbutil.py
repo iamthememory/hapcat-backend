@@ -50,29 +50,30 @@ def load_test_data():
                     )
                 )
         except IntegrityError:
-            app.logger.debug(
-                'Skipping duplicate tag id=%s, name=%s',
-                tag['id'],
-                tag['name'],
-            )
+            pass
 
     # Load locations.
     for location in testdata['locations'].values():
         try:
             with session.begin_nested():
-                newloc = None
-
                 if location.get('ephemeral', False):
                     newloc = RawLocation(
                         id=location['id'],
                         address=location['address'],
                     )
 
+                    session.add(newloc)
+
                 else:
+                    rawloc = RawLocation(
+                        id=uuid.uuid4(),
+                        address=location['address'],
+                    )
+
                     newloc = Location(
                         id=location['id'],
                         name=location['name'],
-                        address=location['address']
+                        rawlocation=rawloc
                     )
 
                     newphotos = [
@@ -89,13 +90,10 @@ def load_test_data():
 
                     newloc.tags.extend(location['tags'])
 
-                session.add(newloc)
+                    session.add(rawloc)
+                    session.add(newloc)
         except IntegrityError:
-            app.logger.debug(
-                'Skipping duplicate location id=%s, name=%s',
-                location['id'],
-                location.get('id', '<none>'),
-            )
+            pass
 
     # Load events.
     for event in testdata['events'].values():
@@ -122,10 +120,6 @@ def load_test_data():
                 newevent.photos.extend([p.id for p in newphotos])
                 session.add(newevent)
         except IntegrityError:
-            app.logger.debug(
-                'Skipping duplicate event id=%s, name=%s',
-                event['id'],
-                event.get('id', '<none>'),
-            )
+            pass
 
     session.commit()
