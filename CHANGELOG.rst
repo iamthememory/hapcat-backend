@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.0.4.dev3
+------------------
+
+Features:
+
+- Add a URL for voting for events/locations
+
 Version 0.0.4.dev2
 ------------------
 
