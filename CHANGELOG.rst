@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 0.0.4.dev4
+------------------
+
+Features:
+
+- Increase the number of suggestions
+- Add an endpoint to add events and locations
+
 Version 0.0.4.dev3
 ------------------
 
