@@ -325,6 +325,12 @@ class User(UUIDObject):
         unique=False,
     )
 
+    votes = db.association_proxy(
+        'user_votes',
+        'vote',
+        creator=lambda votable: Vote(votable_id=votable)
+    )
+
     __mapper_args__ = {
         'polymorphic_identity': 'user'
     }
@@ -345,6 +351,37 @@ class User(UUIDObject):
             return (True, results['feedback'])
         else:
             return (False, results['feedback'])
+
+
+class Vote(db.Model):
+    __tablename__ = 'vote'
+
+    votable_id = db.Column(
+        UUIDType,
+        db.ForeignKey('votable.id', ondelete='cascade'),
+        primary_key=True,
+    )
+
+    user_id = db.Column(
+        UUIDType,
+        db.ForeignKey('user.id', ondelete='cascade'),
+        primary_key=True,
+    )
+
+    numvotes = db.Column(
+        db.Integer,
+        default=0,
+        nullable=False,
+    )
+
+    votable = db.relationship(
+        Votable,
+    )
+
+    user = db.relationship(
+        User,
+        backref=db.backref('user_votes', cascade='all, delete-orphan'),
+    )
 
 
 class Secret(db.Model):
