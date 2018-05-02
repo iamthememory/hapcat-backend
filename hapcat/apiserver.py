@@ -813,8 +813,8 @@ def suggestions(
 
     # Retrieve a few events and locations.
 
-    maxlocs = 5
-    maxevents = 5
+    maxlocs = 20
+    maxevents = 20
 
     tags = set()
 
