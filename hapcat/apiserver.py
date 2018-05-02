@@ -724,6 +724,9 @@ def suggestions(
     ):
     """Send our suggestions.
 
+    :reqheader Authorization: The JWT authorization token for the user from
+        :http:post:`/api/v(int:version)/auth/`.
+
     :query version: The version of the API currently in use
 
     :>json tags: The tags, by ID.
@@ -748,6 +751,7 @@ def suggestions(
 
         GET /api/v0/suggestions/ HTTP/1.0
         Accept: application/json
+        Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbG...0UHGO-U0R4PTQ
 
     **Example response**:
 

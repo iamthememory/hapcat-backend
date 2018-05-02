@@ -4,6 +4,13 @@ Changelog
 Version 0.0.4.dev4
 ------------------
 
+Fixes:
+
+- Fix missing JWT documentation on the addevent endpoint
+
+Version 0.0.4.dev4
+------------------
+
 Features:
 
 - Increase the number of suggestions
