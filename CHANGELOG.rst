@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.0.4.dev5
+------------------
+
+Fixes:
+
+- Fix JWT on suggestions instead of addevent
+
 Version 0.0.4.dev4
 ------------------
 
