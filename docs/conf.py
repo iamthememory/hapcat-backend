@@ -73,9 +73,9 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Hapcat Backend'
-year = u'now'
+year = u'2018'
 authors = [
-    u'ONES-AND-ZEROS-FIXME',
+    u'Ones and Zeros',
 ]
 # The authors as a single string.
 author = ', '.join(authors)

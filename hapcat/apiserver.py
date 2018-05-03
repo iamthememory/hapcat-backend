@@ -61,7 +61,7 @@ def serverinfo(
 
     **Example request**:
 
-    .. http:example:: curl
+    .. sourcecode:: http
 
         GET /api/v0/serverinfo/ HTTP/1.0
         Accept: application/json
@@ -94,7 +94,7 @@ def serverinfo_redirect():
 
     **Example request**:
 
-    .. http:example:: curl
+    .. sourcecode:: http
 
         GET /api/serverinfo/ HTTP/1.0
 
@@ -131,7 +131,7 @@ def tag(
 
     **Example request**:
 
-    .. http:example:: curl
+    .. sourcecode:: http
 
         GET /api/v0/tag/d927d94f-beb8-4295-ac78-5c00e6dc217c HTTP/1.0
         Accept: application/json
@@ -217,7 +217,7 @@ def location(
 
     **Example request**:
 
-    .. http:example:: curl
+    .. sourcecode:: http
 
         GET /api/v0/location/a25a1b9a-2f5a-4c76-b19f-eb970d2c7049 HTTP/1.0
         Accept: application/json
@@ -319,7 +319,7 @@ def event(
 
     **Example request**:
 
-    .. http:example:: curl
+    .. sourcecode:: http
 
         GET /api/v0/event/b0a28a40-b8ad-4131-8c64-071f3fd45bee HTTP/1.0
         Accept: application/json
@@ -421,7 +421,7 @@ def addevent(
 
     **Example request**:
 
-    .. http:example:: curl
+    .. sourcecode:: http
 
         POST /api/v0/addevent/ HTTP/1.0
         Accept: application/json
@@ -614,7 +614,7 @@ def vote(
 
     **Example request**:
 
-    .. http:example:: curl
+    .. sourcecode:: http
 
         GET /api/v0/vote/c43e3c6a-64ad-4cc8-94cd-65d1c8e4ada6/ HTTP/1.0
         Accept: application/json
@@ -748,7 +748,7 @@ def suggestions(
 
     **Example request**:
 
-    .. http:example:: curl
+    .. sourcecode:: http
 
         GET /api/v0/suggestions/ HTTP/1.0
         Accept: application/json
@@ -933,7 +933,7 @@ def protect():
 
     **Example request**:
 
-    .. http:example:: curl
+    .. sourcecode:: http
 
         GET /debug/protectedtest/ HTTP/1.0
         Accept: application/json
@@ -1001,7 +1001,7 @@ def register(version):
 
     **Example request**:
 
-    .. http:example:: curl
+    .. sourcecode:: http
 
         POST /api/v0/registration/ HTTP/1.0
         Accept: application/json
@@ -1147,7 +1147,7 @@ def login(version):
 
     **Example request**:
 
-    .. http:example:: curl
+    .. sourcecode:: http
 
         POST /api/v0/login/ HTTP/1.0
         Accept: application/json
